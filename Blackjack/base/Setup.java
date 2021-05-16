@@ -30,13 +30,13 @@ public class Setup {
 				   balance = Integer.parseInt(args[3]);
 				   shoe = Integer.parseInt(args[4]);
 				   shuffle = Integer.parseInt(args[5]);
-				   p1 = new Player(balance);
-				   p2 = new Player(balance);
-				   p3 = new Player(balance);
+				   p1 = new Player(250);
+				   p2 = new Player(500);
+				   p3 = new Player(750);
 				   p4 = new Player(balance);
 				   p5 = new Player(balance);
 				   p6 = new Player(balance);
-				   p7 = new Player(balance);
+				   p7 = new Player(1000);
 				   p8 = new Player(balance);
 				   break;
 		case "-d": System.out.println("debug mode");
@@ -58,7 +58,6 @@ public class Setup {
 		default: System.out.println("Unknown input parameter");
 				   break;
 		}
-		
 		
 	}
 
