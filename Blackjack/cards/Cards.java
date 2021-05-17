@@ -127,4 +127,9 @@ public class Cards {
 		
 		return rank+suit;
 	}
+	
+	public static int cardvalue(Cards card) {
+		int value = card.score;
+		return value;
+	}
 }
