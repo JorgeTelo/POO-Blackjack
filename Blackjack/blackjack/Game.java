@@ -40,8 +40,6 @@ public class Game {
 			switch(cmd) {
 			//bet
 			case "b":
-
-			
 				System.out.println("Betting");
 				break;
 			//current balance
