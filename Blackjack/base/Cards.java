@@ -93,6 +93,33 @@ public class Cards {
 		return Character.getNumericValue(suit);
 	}
 	
+	private String ScoretoString(int score) {
+		if(score == 1)
+			return "1";
+		if(score== 2)
+			return "2";
+		if(score == 3)
+			return "3";
+		if(score == 4)
+			return "4";
+		if(score == 5)
+			return "5";
+		if(score == 6)
+			return "6";
+		if(score == 7)
+			return "7";
+		if(score == 8)
+			return "8";
+		if(score == 9)
+			return "9";
+		if(score == 10)
+			return "10";
+		if(score == 11)
+			return "11";
+		
+		return String.valueOf(score);
+	}
+	
 	/*toString method for printing*/
 	public String toString() {
 		String rank = RanktoString(this.rank);
