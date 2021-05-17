@@ -18,7 +18,7 @@ public class Setup {
 	public static Player p6;
 	public static Player p7;
 	public static Player p8;
-	
+
 	
 
 	public static void main(String[] args) {
@@ -30,14 +30,9 @@ public class Setup {
 				   balance = Integer.parseInt(args[3]);
 				   shoe = Integer.parseInt(args[4]);
 				   shuffle = Integer.parseInt(args[5]);
-				   p1 = new Player(250);
-				   p2 = new Player(500);
-				   p3 = new Player(750);
-				   p4 = new Player(balance);
-				   p5 = new Player(balance);
-				   p6 = new Player(balance);
-				   p7 = new Player(1000);
-				   p8 = new Player(balance);
+				   p1 = new Player(balance);
+				   decks Deck = new decks(shuffle, shoe);
+
 				   break;
 		case "-d": System.out.println("debug mode");
 				   min_bet = Integer.parseInt(args[1]);
