@@ -3,6 +3,9 @@ package base;
 import java.util.LinkedList;
 import java.util.List;
 
+import cards.Cards;
+import cards.Decks;
+
 public class Player {
 	/* Fields */
 	private static int activeplayers = 1; /* determines what is the number of the new Player object */
@@ -34,8 +37,8 @@ public class Player {
 		this.curr_balance += change;
 	}
 	/*Adds new card to current hand*/
-	public void Add_cardtohand(decks GameDeck) {
-		Cards entry = decks.draw();
+	public void Add_cardtohand(Decks GameDeck) {
+		Cards entry = Decks.draw();
 		hand.add(entry);
 		//System.out.println("Current hand: " + hand);
 	}
