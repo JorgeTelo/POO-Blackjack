@@ -1,6 +1,7 @@
 package main;
 
-import base.Player;
+import player.Player;
+import blackjack.*;
 
 public class Main {
 	public static int min_bet;
@@ -28,9 +29,11 @@ public class Main {
 		if(args.length <5) {
 			running_commands();
 		}
+		
+		Game blackjack = new Game();
 		/*Now to call the different modes or give warnings*/
 		//Interactive Mode
-		else if(args[0].equals("-i")) {
+		if(args[0].equals("-i")) {
 			if(args.length != 6)
 				running_commands();
 				
@@ -41,7 +44,7 @@ public class Main {
 				}
 			   max_bet = Integer.parseInt(args[2]);
 				if(max_bet < 10*min_bet || max_bet > 20*min_bet) {
-					System.out.println("Maximum bet must be 10 times over minimum bet and 20 times lower");
+					System.out.println("Maximum bet must be 10 times over minimum bet, but below 20 times the value of minimum bet");
 					running_commands();
 				}
 				
@@ -62,6 +65,8 @@ public class Main {
 				   System.out.println("Shuffle must be between 10% and 100%, including those numbers");
 				   running_commands();
 			   }
+			   blackjack.interactive(min_bet, max_bet, balance, shoe, shuffle);
+			   
 		}
 		//Debug Mode
 		else if(args[0].equals("-d")) {
