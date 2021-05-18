@@ -53,15 +53,17 @@ public class Decks {
 
 	//Drawing cards from Deck
 	public static Cards draw() {
+		Cards card_out = new Cards(0,0,0); /*empty card, to be changed later in this method*/
 		try {
 			//System.out.println("Card drawn " + GameDeck.getFirst());
-			return GameDeck.pop();
+			card_out = GameDeck.pop();
 		}catch(Exception e) {
 			System.out.println("Deck is empty!");
 			System.out.println("Closing game!");
 			System.exit(0);
-			return GameDeck.pop(); //to leave the method, else doesn't recognize the exit status
+			/*if no card was popped, then game closes due to error*/
 		}
+		return card_out;
 	}
 	 
 	

@@ -33,6 +33,7 @@ public class Cards {
 	private final static int C = 4;
 	
 	/*Constructor*/
+
 	Cards(int score, int suit, int rank){
 		this.score = score;
 		this.suit = suit;
