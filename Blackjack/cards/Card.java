@@ -1,6 +1,6 @@
 package cards;
 
-public class Cards {
+public class Card {
 	/*Fields*/
 	public int score;
 	public int suit;
@@ -14,7 +14,6 @@ public class Cards {
 	 * Q = 12
 	 * K = 13
 	 */
-	private final static int T = 10;
 	private final static int A = 1;
 	private final static int J = 11;
 	private final static int Q = 12;
@@ -34,7 +33,7 @@ public class Cards {
 	
 	/*Constructor*/
 
-	Cards(int score, int suit, int rank){
+	Card(int score, int suit, int rank){
 		this.score = score;
 		this.suit = suit;
 		this.rank = rank;
@@ -42,8 +41,6 @@ public class Cards {
 	
 	/*Methods required to print the ints into readable format and strings to ints from files*/
 	private String RanktoString(int rank) {
-		if(rank == T)
-			return "10";
 		if(rank == J)
 			return "J";
 		if(rank == Q)
@@ -56,8 +53,6 @@ public class Cards {
 			return String.valueOf(rank);
 	}
 	public static int StringtoRank(char rank) {
-		if(rank == 'T')
-			return T;
 		if(rank == 'J')
 			return J;
 		if(rank == 'Q')
@@ -129,7 +124,7 @@ public class Cards {
 		return rank+suit;
 	}
 	
-	public static int cardvalue(Cards card) {
+	public static int cardvalue(Card card) {
 		int value = card.score;
 		return value;
 	}

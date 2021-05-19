@@ -25,14 +25,14 @@ public class Main {
 	
 
 	public static void main(String[] args) {
-		// Switch case to chose what mode to start
+		 /*Switch case to chose what mode to start*/
 		if(args.length <5) {
 			running_commands();
 		}
 		
 		Game blackjack = new Game();
 		/*Now to call the different modes or give warnings*/
-		//Interactive Mode
+		/*Interactive Mode*/
 		if(args[0].equals("-i")) {
 			if(args.length != 6)
 				running_commands();

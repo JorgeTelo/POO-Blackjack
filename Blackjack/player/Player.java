@@ -1,23 +1,26 @@
 package player;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-import cards.Cards;
-import cards.Decks;
+import cards.Card;
+import cards.Deck;
 
 public class Player {
 	/* Fields */
 	private static int activeplayers = 1; /* determines what is the number of the new Player object */
 	public int playernum; /*number of the current player, max 8*/
-	private float curr_balance;
-	public LinkedList<Cards> hand = new LinkedList<Cards>();
+	private int curr_balance;
+	private final int initial_balance;
+	private int previousBet;
+	public LinkedList<Card> hand = new LinkedList<Card>();
 	
 	/*Constructors*/
 	/*to use when initializing the new player*/
-	public Player(int b){
+	public Player(int b, int min){
 		this.playernum = activeplayers++;
 		this.curr_balance  = b;
+		this.initial_balance = b;
+		this.previousBet = min;
 		
 		System.out.print("Player number " + playernum);
 		System.out.println(" initiated with balance of " + b);
@@ -37,8 +40,8 @@ public class Player {
 		this.curr_balance += change;
 	}
 	/*Adds new card to current hand*/
-	public void Add_cardtohand(Decks GameDeck) {
-		Cards entry = Decks.draw();
+	public void Add_cardtohand(Deck GameDeck) {
+		Card entry = Deck.draw();
 		hand.add(entry);
 		//System.out.println("Current hand: " + hand);
 	}
@@ -56,12 +59,43 @@ public class Player {
 	public int handscore() {
 		int total = 0;
 		for(int i=0; i<this.hand.size();i++) {
-			total = total + Cards.cardvalue(hand.get(i));
+			total = total + Card.cardvalue(hand.get(i));
 		}
 		return total;
 		
 	}
 	
+	public int getBalance() {
+		return this.curr_balance;
+	}
+	
+	public int getInitialBalance() {
+		return this.initial_balance;
+	}
+	
+	/*
+	 * To Do: Show hand
+	 * Need to make a method in Card.java to show cards
+	 */
+	
+	public void showHand(LinkedList<Card> hand) {
+		System.out.print("player's hand ");
+		String cards = "";
+		int total = 0;
+		
+		Iterator<Card> iterator = hand.iterator();
+		
+		while(iterator.hasNext()) {
+			cards = cards +iterator.next() + " ";
+		}
+		
+		for(int i=0; i<hand.size();i++) {
+			total += Card.cardvalue(hand.get(i));
+		}
+		
+		System.out.println(cards + "(" + total + ")");
+		
+	}
 	
 	
 }
