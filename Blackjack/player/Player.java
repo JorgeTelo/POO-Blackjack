@@ -106,7 +106,11 @@ public class Player {
 
 	//card counting functions
 
+<<<<<<< HEAD
 	/*public BShard(int playerScore, int dealerScore){
+=======
+	public int BShard(int playerScore, int dealerScore){
+>>>>>>> 5974f941dbd2e6a4f1b0979f3a43be29a96693a1
 		if (playerScore <= 8) return 1;
 		if (playerScore == 9){
 			if (dealerScore>=3 && dealerScore<=6) return 4;
@@ -130,11 +134,22 @@ public class Player {
 			if (dealerScore>=9 && playerScore==16) return 6;
 			return 1;
 		}
-		if (playerScore >= 17) return 2;
+		return 2;
 	}
 
-	public BSsoft(int playerScore, int dealerScore){
-		
+	public int BSsoft(int playerScore, int dealerScore){
+		if (playerScore<=17){
+			if (dealerScore == 5 || deadlerScore==6) return 4;
+			if (dealerScore==4 && playerScore>=15) return 4;
+			if (dealerScore==3 && playerScore==17) return 4;
+			return 1;
+		}
+		if (playerScore==18){
+			if (dealerScore>=3 && dealerScore<=6) return 5;
+			if (dealerScore>=9) return 1;
+			return 2;
+		}
+		return 2;
 	}
 	public int basicStrategy(int dealerScore){
 	//This functions return an int that tells what
@@ -146,12 +161,15 @@ public class Player {
 	//5 - double if possible, else stand
 	//6 - surrender if possible, else hit
 		int playerScore = handscore();
+		int table = 1;
+		int nextMove = 0;
 
-		if (table == 1)
-			int nextMove = BShard(playerScore, dealerScore);
-		if (table == 2)
-			int nextMove = BSsoft(playerScore, dealerScore);
-		
+		if (table == 1){
+			nextMove = BShard(playerScore, dealerScore);
+		}		
+		if (table == 2){
+			nextMove = BSsoft(playerScore, dealerScore);
+		}
 		return nextMove;
 	}*/
 	
