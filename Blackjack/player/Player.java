@@ -104,6 +104,58 @@ public class Player {
 		System.out.println(cards + "(" + total + ")");
 		
 	}
+
+
+	//card counting functions
+
+	public BShard(int playerScore, int dealerScore){
+		if (playerScore <= 8) return 1;
+		if (playerScore == 9){
+			if (dealerScore>=3 && dealerScore<=6) return 4;
+			return 1;
+		}
+		if (playerScore == 10){
+			if (dealerScore<=9) return 4;
+			return 1;
+		}
+		if (playerScore == 11){
+			if (dealerScore<=10) return 4;
+			return 1;
+		}
+		if (playerScore == 12){
+			if (dealerScore>=3 && dealerScore <=6) return 2;
+			return 1;
+		}
+		if (playerScore>=13 && playerScore <=16){
+			if (dealerScore<=6) return 2;
+			if (dealerScore ==10 && playerScore==15) return 6;
+			if (dealerScore>=9 && playerScore==16) return 6;
+			return 1;
+		}
+		if (playerScore >= 17) return 2;
+	}
+
+	public BSsoft(int playerScore, int dealerScore){
+		
+	}
+	public int basicStrategy(int dealerScore){
+	//This functions return an int that tells what
+	//the next mode for the player should be
+	//1 - hit
+	//2 - stand
+	//3 - split
+	//4 - double if possible, else hit
+	//5 - double if possible, else stand
+	//6 - surrender if possible, else hit
+		int playerScore = handscore();
+
+		if (table == 1)
+			int nextMove = BShard(playerScore, dealerScore);
+		if (table == 2)
+			int nextMove = BSsoft(playerScore, dealerScore);
+		
+		return nextMove;
+	}
 	
 	public void updatePrevious(int amount) {
 		this.previousBet = amount;
