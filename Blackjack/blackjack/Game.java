@@ -10,10 +10,10 @@ import java.util.*;
 import java.io.*;
 
 public class Game extends GameActions{
-		/*This class is the game development class
-		 * which has all the modes on how they run
-		 */
-	
+	/*This class is the game development class
+	* which has all the modes on how they run
+	*/
+
 	public void interactive(int min_bet, int max_bet, int init_balance, int shoe, int shuffle) {
 		Player p1 = new Player(init_balance, min_bet); /*starting player*/
 		Deck GameDeck = new Deck(shoe); /*starting shuffled deck*/
@@ -49,9 +49,9 @@ public class Game extends GameActions{
 						amount = Integer.parseInt(bet);
 						//System.out.println("player is betting " + amount);
 						/*
-						 * if cmdln string is bigger than 1, it means that the command was b 'amount'.
-						 * this for loop grabs the amount to bet
-						 */
+							* if cmdln string is bigger than 1, it means that the command was b 'amount'.
+							* this for loop grabs the amount to bet
+							*/
 					}
 					p1.showHand(p1.hand);
 					System.out.println("player is betting " + amount);
@@ -113,5 +113,40 @@ public class Game extends GameActions{
 				break;
 			}
 		}
+	}
+
+	public void simulation(int min_bet, int max_bet, int init_balance, int shoe, int shuffle, int s_number, String strategy) {
+		Player p1 = new Player(init_balance, min_bet); /*starting player*/
+
+		//For now, Dealer will act as player 2
+		Player d = new Player(init_balance, min_bet);
+		//
+
+		Deck GameDeck = new Deck(shoe); /*starting shuffled deck*/
+
+		/*game is initiated so state goes to INIT*/
+		this.state = INIT;
+		p1.Add_cardtohand(GameDeck);
+		d.Add_cardtohand(GameDeck);
+		p1.Add_cardtohand(GameDeck);
+		d.Add_cardtohand(GameDeck);
+
+		//while(state != QUIT) {
+
+			//IMPLEMENT BASIC STRATEGY
+			//table1 = hard, 2=soft, 3=pairs 
+			int table = 1;
+					
+			p1.showHand(p1.hand);
+			System.out.println("Dealer's hand: ");
+			d.showHand(d.hand);
+
+			int dealerScore = d.handscore();
+			System.out.println("dealerScore" +dealerScore);
+					
+
+			int a = p1.basicStrategy(dealerScore);
+			System.out.println(a);
+		//}
 	}
 }
