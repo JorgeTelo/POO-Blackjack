@@ -108,7 +108,7 @@ public class Player {
 
 	//card counting functions
 
-	public BShard(int playerScore, int dealerScore){
+	public int BShard(int playerScore, int dealerScore){
 		if (playerScore <= 8) return 1;
 		if (playerScore == 9){
 			if (dealerScore>=3 && dealerScore<=6) return 4;
@@ -133,10 +133,12 @@ public class Player {
 			return 1;
 		}
 		if (playerScore >= 17) return 2;
+
+		return 0;
 	}
 
-	public BSsoft(int playerScore, int dealerScore){
-		
+	public int BSsoft(int playerScore, int dealerScore){
+		return 0;
 	}
 	public int basicStrategy(int dealerScore){
 	//This functions return an int that tells what
@@ -148,12 +150,15 @@ public class Player {
 	//5 - double if possible, else stand
 	//6 - surrender if possible, else hit
 		int playerScore = handscore();
+		int table = 1;
+		int nextMove = 0;
 
-		if (table == 1)
-			int nextMove = BShard(playerScore, dealerScore);
-		if (table == 2)
-			int nextMove = BSsoft(playerScore, dealerScore);
-		
+		if (table == 1){
+			nextMove = BShard(playerScore, dealerScore);
+		}		
+		if (table == 2){
+			nextMove = BSsoft(playerScore, dealerScore);
+		}
 		return nextMove;
 	}
 	

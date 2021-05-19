@@ -124,20 +124,18 @@ public class Game extends GameActions{
 	}
 
 	public void simulation(int min_bet, int max_bet, int init_balance, int shoe, int shuffle, int s_number, String strategy) {
-		Player p1 = new Player(init_balance, min_bet); /*starting player*/
-
+		Deck GameDeck = new Deck(shoe);
+		Player p1 = new Player(init_balance, min_bet, GameDeck);/*starting shuffled deck*/
+		
 		//For now, Dealer will act as player 2
-		Player d = new Player(init_balance, min_bet);
+		Player d = new Player(init_balance, min_bet, GameDeck);
 		//
-
-		Deck GameDeck = new Deck(shoe); /*starting shuffled deck*/
 
 		/*game is initiated so state goes to INIT*/
 		this.state = INIT;
-		p1.Add_cardtohand(GameDeck);
-		d.Add_cardtohand(GameDeck);
-		p1.Add_cardtohand(GameDeck);
-		d.Add_cardtohand(GameDeck);
+
+
+		System.out.println(strategy);
 
 		//while(state != QUIT) {
 
