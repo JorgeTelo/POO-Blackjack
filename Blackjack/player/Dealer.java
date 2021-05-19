@@ -44,11 +44,11 @@ public class Dealer {
 		this.hand.clear();
 	}
 		
-	public int handscore(int gameState) {
+	public int dealerHandScore(int gameState) {
 		int total = 0;
 		int numberOfCards = 0;
 		if (gameState == SIMULATION){
-			numberOfCards = (this.hand.size())-1;
+			numberOfCards = 1;//(this.hand.size())-1;
 		}else{
 			numberOfCards = this.hand.size();
 		}
@@ -56,7 +56,6 @@ public class Dealer {
 			total = total + Card.cardvalue(hand.get(i));
 		}
 		return total;
-		
 	}
 	
 	/*

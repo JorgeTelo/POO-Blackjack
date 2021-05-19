@@ -148,14 +148,6 @@ public class Player {
 		return 2;
 	}
 	public int basicStrategy(int dealerScore){
-	//This functions return an int that tells what
-	//the next mode for the player should be
-	//1 - hit
-	//2 - stand
-	//3 - split
-	//4 - double if possible, else hit
-	//5 - double if possible, else stand
-	//6 - surrender if possible, else hit
 		int playerScore = handscore();
 		int table = 1;
 		int nextMove = 0;
