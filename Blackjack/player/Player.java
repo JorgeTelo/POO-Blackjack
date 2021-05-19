@@ -21,8 +21,6 @@ public class Player {
 		this.curr_balance  = b;
 		this.initial_balance = b;
 		this.previousBet = min;
-		this.Add_cardtohand(Gamedeck); 
-		this.Add_cardtohand(Gamedeck);
 		/*
 		 * Starting with 2 cards on hand
 		 */
@@ -86,7 +84,7 @@ public class Player {
 	 * Need to make a method in Card.java to show cards
 	 */
 	
-	public void showHand(LinkedList<Card> hand) {
+	public int showHand(LinkedList<Card> hand) {
 		System.out.print("player's hand ");
 		String cards = "";
 		int total = 0;
@@ -102,13 +100,13 @@ public class Player {
 		}
 		
 		System.out.println(cards + "(" + total + ")");
-		
+		return total;
 	}
 
 
 	//card counting functions
 
-	public BShard(int playerScore, int dealerScore){
+	/*public BShard(int playerScore, int dealerScore){
 		if (playerScore <= 8) return 1;
 		if (playerScore == 9){
 			if (dealerScore>=3 && dealerScore<=6) return 4;
@@ -155,12 +153,13 @@ public class Player {
 			int nextMove = BSsoft(playerScore, dealerScore);
 		
 		return nextMove;
-	}
+	}*/
 	
 	public void updatePrevious(int amount) {
 		this.previousBet = amount;
 		return;
 	}
+	
 	
 	
 }
