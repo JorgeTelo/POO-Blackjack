@@ -148,7 +148,7 @@ public class Game extends GameActions{
 			d.showHand(d.hand);
 
 			int dealerScore = d.handscore();
-			System.out.println("dealerScore" +dealerScore);
+			System.out.println("dealerScore" dealerScore);
 					
 
 			int a = p1.basicStrategy(dealerScore);
