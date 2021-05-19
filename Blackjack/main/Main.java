@@ -1,7 +1,9 @@
 package main;
 
-import player.Player;
+import player.*;
 import blackjack.*;
+import cards.*;
+
 
 public class Main {
 	public static int min_bet;
