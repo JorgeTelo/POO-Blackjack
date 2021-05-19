@@ -15,15 +15,12 @@ public class Game extends GameActions{
 		 */
 	
 	public void interactive(int min_bet, int max_bet, int init_balance, int shoe, int shuffle) {
-		Player p1 = new Player(init_balance, min_bet); /*starting player*/
-		Deck GameDeck = new Deck(shoe); /*starting shuffled deck*/
+		Deck GameDeck = new Deck(shoe);
+		Player p1 = new Player(init_balance, min_bet, GameDeck);/*starting shuffled deck*/
 		Scanner scan = null; /*reads from terminal*/
 		
 		/*game is initiated so state goes to INIT*/
 		this.state = INIT;
-		p1.Add_cardtohand(GameDeck);
-		p1.Add_cardtohand(GameDeck);
-		p1.Add_cardtohand(GameDeck);
 		
 		/*while the state doesn't go into quit, which means player doesn't quit, keep going*/
 		while(state != QUIT) {
@@ -46,34 +43,41 @@ public class Game extends GameActions{
 					String bet = "";
 					for(int i = 2; i<cmdln.length();i++) {
 						bet += cmdln.charAt(i);
-						amount = Integer.parseInt(bet);
+						//amount = Integer.parseInt(bet);
+						//this.betting(p1, amount);
 						//System.out.println("player is betting " + amount);
 						/*
 						 * if cmdln string is bigger than 1, it means that the command was b 'amount'.
 						 * this for loop grabs the amount to bet
 						 */
 					}
-					p1.showHand(p1.hand);
-					System.out.println("player is betting " + amount);
-					/*try {
+					//p1.showHand(p1.hand); /*works*/
+					try {
 						amount = Integer.parseInt(bet);
 						if((amount >= min_bet) && (amount <= max_bet) && (p1.getBalance() - amount >= 0)) {
-							
+							this.betting(p1, amount);
+							break;
 						}else {
 							System.out.println("b: Illegal amount");
+							break;
 						}
 					}catch(NumberFormatException e) {
 						System.out.println("b: Illegal amount");
-					}*/
+					}
+				}else {
+					amount = p1.getPrevious();
+					this.betting(p1, amount);
 				}
 				System.out.println("Betting");
 				break;
 			//current balance
 			case '$':
-				System.out.println("Checking Balance");
+				int balance = p1.getBalance();
+				System.out.println("player current balance is " + balance);
 				break;
 			//deal
 			case 'd':
+				this.dealing(p1, GameDeck);
 				System.out.println("Dealing");
 				break;
 			//hit
@@ -100,10 +104,14 @@ public class Game extends GameActions{
 			case '2':
 				System.out.println("Doubling Down");
 				break;
-			//advice
+			//player quits
+			case 'q':
+				this.toquit(p1);
+				break;
 			}
 			
 			switch(cmdln) {
+			//advice
 			case "ad":
 				System.out.println("Advising");
 				break;

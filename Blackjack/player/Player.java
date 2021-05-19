@@ -16,12 +16,16 @@ public class Player {
 	
 	/*Constructors*/
 	/*to use when initializing the new player*/
-	public Player(int b, int min){
+	public Player(int b, int min, Deck Gamedeck){
 		this.playernum = activeplayers++;
 		this.curr_balance  = b;
 		this.initial_balance = b;
 		this.previousBet = min;
-		
+		this.Add_cardtohand(Gamedeck); 
+		this.Add_cardtohand(Gamedeck);
+		/*
+		 * Starting with 2 cards on hand
+		 */
 		System.out.print("Player number " + playernum);
 		System.out.println(" initiated with balance of " + b);
 		
@@ -31,18 +35,18 @@ public class Player {
 	
 	/*Methods*/
 	/*Adds the value of a bet if players wins*/
-	public void Add_balance(int change) {
-		this.curr_balance += change;
+	public void plusBalance(int initial, int change) {
+		this.curr_balance = initial + change;
 		
 	}
 	/*Subtracts the value of a bet if players wins*/
-	public void Subtract_balance(int change) {
-		this.curr_balance += change;
+	public void minusBalance(int initial, int change) {
+		this.curr_balance = initial - change;
 	}
 	/*Adds new card to current hand*/
 	public void Add_cardtohand(Deck GameDeck) {
 		Card entry = Deck.draw();
-		hand.add(entry);
+		this.hand.add(entry);
 		//System.out.println("Current hand: " + hand);
 	}
 	
@@ -73,6 +77,10 @@ public class Player {
 		return this.initial_balance;
 	}
 	
+	public int getPrevious() {
+		return this.previousBet;
+	}
+	
 	/*
 	 * To Do: Show hand
 	 * Need to make a method in Card.java to show cards
@@ -95,6 +103,11 @@ public class Player {
 		
 		System.out.println(cards + "(" + total + ")");
 		
+	}
+	
+	public void updatePrevious(int amount) {
+		this.previousBet = amount;
+		return;
 	}
 	
 	

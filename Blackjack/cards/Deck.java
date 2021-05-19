@@ -65,6 +65,12 @@ public class Deck {
 		}
 		return card_out;
 	}
+
+
+	public static int deckSize() {
+		return Deck.GameDeck.size();
+		
+	}
 	 
 	
 }
