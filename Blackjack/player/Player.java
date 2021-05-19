@@ -106,11 +106,7 @@ public class Player {
 
 	//card counting functions
 
-<<<<<<< HEAD
-	/*public BShard(int playerScore, int dealerScore){
-=======
 	public int BShard(int playerScore, int dealerScore){
->>>>>>> 5974f941dbd2e6a4f1b0979f3a43be29a96693a1
 		if (playerScore <= 8) return 1;
 		if (playerScore == 9){
 			if (dealerScore>=3 && dealerScore<=6) return 4;
@@ -139,7 +135,7 @@ public class Player {
 
 	public int BSsoft(int playerScore, int dealerScore){
 		if (playerScore<=17){
-			if (dealerScore == 5 || deadlerScore==6) return 4;
+			if (dealerScore == 5 || dealerScore==6) return 4;
 			if (dealerScore==4 && playerScore>=15) return 4;
 			if (dealerScore==3 && playerScore==17) return 4;
 			return 1;
@@ -171,7 +167,7 @@ public class Player {
 			nextMove = BSsoft(playerScore, dealerScore);
 		}
 		return nextMove;
-	}*/
+	}
 	
 	public void updatePrevious(int amount) {
 		this.previousBet = amount;

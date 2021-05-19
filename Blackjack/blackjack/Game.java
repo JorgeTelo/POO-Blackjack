@@ -128,40 +128,39 @@ public class Game extends GameActions{
 			}
 		}
 	}
-<<<<<<< HEAD
-=======
 
 	public void simulation(int min_bet, int max_bet, int init_balance, int shoe, int shuffle, int s_number, String strategy) {
 		Deck GameDeck = new Deck(shoe);
+
 		Player p1 = new Player(init_balance, min_bet, GameDeck);/*starting shuffled deck*/
 		
-		//For now, Dealer will act as player 2
-		Player d = new Player(init_balance, min_bet, GameDeck);
-		//
+		Dealer dealer = new Dealer(GameDeck);
+		
 
-		/*game is initiated so state goes to INIT*/
-		this.state = INIT;
+		this.state = SIMULATION;
+
+		for(int i=0;i<2;i++) {
+			p1.Add_cardtohand(GameDeck);
+			dealer.Add_cardtohand(GameDeck);
+		}
 
 
 		System.out.println(strategy);
 
-		//while(state != QUIT) {
+		//IMPLEMENT BASIC STRATEGY
+		//table1 = hard, 2=soft, 3=pairs 
+		int table = 1;
+				
+		p1.showHand(p1.hand);
+		int aux = dealer.showDealer(dealer.hand, this.getState());
 
-			//IMPLEMENT BASIC STRATEGY
-			//table1 = hard, 2=soft, 3=pairs 
-			int table = 1;
-					
-			p1.showHand(p1.hand);
-			System.out.println("Dealer's hand: ");
-			d.showHand(d.hand);
+		int dealerScore = dealer.handscore(this.getState());
+		System.out.println("dealerScore : " + dealerScore);
 
-			int dealerScore = d.handscore();
-			System.out.println("dealerScore" dealerScore);
-					
 
-			int a = p1.basicStrategy(dealerScore);
-			System.out.println(a);
-		//}
+				
+
+		int a = p1.basicStrategy(dealerScore);
+		System.out.println(a);
 	}
->>>>>>> 5974f941dbd2e6a4f1b0979f3a43be29a96693a1
 }

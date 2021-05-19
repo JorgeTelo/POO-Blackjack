@@ -16,6 +16,7 @@ public class Dealer {
 	protected final static int STAND = 3; /*player stands or busts*/
 	protected final static int DEAL = 4; /*dealer turn*/
 	protected final static int QUIT = 5; /*players quits*/
+	protected final static int SIMULATION = 6; /*only for simulation*/
 	protected int state = INIT; /*first state is 0*/
 
 	public LinkedList<Card> hand = new LinkedList<Card>();
@@ -43,9 +44,15 @@ public class Dealer {
 		this.hand.clear();
 	}
 		
-	public int handscore() {
+	public int handscore(int gameState) {
 		int total = 0;
-		for(int i=0; i<this.hand.size();i++) {
+		int numberOfCards = 0;
+		if (gameState == SIMULATION){
+			numberOfCards = (this.hand.size())-1;
+		}else{
+			numberOfCards = this.hand.size();
+		}
+		for(int i=0; i<numberOfCards;i++) {
 			total = total + Card.cardvalue(hand.get(i));
 		}
 		return total;
@@ -62,7 +69,7 @@ public class Dealer {
 		String cards = "";
 		int total = 0;
 		
-		if(gameState == PLAY) {
+		if(gameState == PLAY || gameState == SIMULATION) {
 			cards = hand.getFirst() + " X"; /*X is the hole card*/
 			System.out.println(cards);
 

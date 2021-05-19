@@ -135,7 +135,7 @@ public class Main {
 				System.out.println("Unknown strategy");
 				running_commands();
 			}
-			//blackjack.simulation(min_bet, max_bet, balance, shoe, shuffle, s_number, strat);
+			blackjack.simulation(min_bet, max_bet, balance, shoe, shuffle, s_number, strat);
 
 		}
 		/*switch(args[0]) {

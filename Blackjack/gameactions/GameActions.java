@@ -15,6 +15,7 @@ public abstract class GameActions {
 	protected final static int STAND = 3; /*player stands or busts*/
 	protected final static int DEAL = 4; /*dealer turn*/
 	protected final static int QUIT = 5; /*players quits*/
+	protected final static int SIMULATION = 6; /*only for simulation mode*/
 	protected int state = INIT; /*first state is 0*/
 	
 	/*
