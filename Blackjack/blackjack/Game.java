@@ -166,23 +166,59 @@ public class Game extends GameActions{
 			dealer.Add_cardtohand(GameDeck);
 		}
 
+		switch(strategy) {
+		case "BS" :
+			while(true){
+				// Shows player hand
+				p1.showHand(p1.hand);
 
-		System.out.println(strategy);
+				// Shows dealer's hand
+				int aux = dealer.showDealer(dealer.hand, this.getState());
 
-		//IMPLEMENT BASIC STRATEGY
-		//table1 = hard, 2=soft, 3=pairs 
-		int table = 1;
+				// get the dealer's card that is showing
+				int dealerScore = dealer.dealerHandScore(this.getState());
+
+				// Compute next move for the player
+				int nextMove = p1.basicStrategy(dealerScore);
+				System.out.println(nextMove);
+
+				switch(nextMove){
+				//1 - hit
+				//2 - stand
+				//3 - split
+				//4 - double if possible, else hit
+				//5 - double if possible, else stand
+				//6 - surrender if possible, else hit
+				case 1 :
+					this.hitting(p1, GameDeck);
+					break;
+				case 2 : 
+					System.out.println("player stands");
+					this.setState(DEAL);
+					while(this.getState()==DEAL) {
+						
+					}
+					break;
+				case 3 : 
+					System.out.println("Splitting");
+					break;	
+				case 4 :
+					System.out.println("Please wait, feature under construction");
+					break;
+				case 5 :
+					System.out.println("Please wait, feature also under construction");
+					break;
+				}
+			}
+			//break;
+		case "BS-AF" : 
+			break;
+		case "HL" : 
+			break;
+		case "HL-AF" :
+			break;
+		}
+
 				
-		p1.showHand(p1.hand);
-		int aux = dealer.showDealer(dealer.hand, this.getState());
-
-		int dealerScore = dealer.handscore(this.getState());
-		System.out.println("dealerScore : " + dealerScore);
-
-
-				
-
-		int a = p1.basicStrategy(dealerScore);
-		System.out.println(a);
 	}
 }
