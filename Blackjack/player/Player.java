@@ -9,7 +9,7 @@ public class Player {
 	/* Fields */
 	private static int activeplayers = 1; /* determines what is the number of the new Player object */
 	public int playernum; /*number of the current player, max 8*/
-	private int curr_balance;
+	private double curr_balance;
 	private final int initial_balance;
 	private int previousBet;
 	public LinkedList<Card> hand = new LinkedList<Card>();
@@ -33,13 +33,13 @@ public class Player {
 	
 	/*Methods*/
 	/*Adds the value of a bet if players wins*/
-	public void plusBalance(int initial, int change) {
-		this.curr_balance = initial + change;
+	public void plusBalance(double e, double d) {
+		this.curr_balance =  e + d;
 		
 	}
 	/*Subtracts the value of a bet if players wins*/
-	public void minusBalance(int initial, int change) {
-		this.curr_balance = initial - change;
+	public void minusBalance(double d, int change) {
+		this.curr_balance = d - change;
 	}
 	/*Adds new card to current hand*/
 	public void Add_cardtohand(Deck GameDeck) {
@@ -67,7 +67,7 @@ public class Player {
 		
 	}
 	
-	public int getBalance() {
+	public double getBalance() {
 		return this.curr_balance;
 	}
 	
@@ -79,6 +79,10 @@ public class Player {
 		return this.previousBet;
 	}
 	
+	public void updatePrevious(int amount) {
+		this.previousBet = amount;
+		return;
+	}
 	/*
 	 * To Do: Show hand
 	 * Need to make a method in Card.java to show cards
@@ -169,11 +173,7 @@ public class Player {
 		return nextMove;
 	}
 	
-	public void updatePrevious(int amount) {
-		this.previousBet = amount;
-		return;
-	}
-	
+
 	
 	
 }

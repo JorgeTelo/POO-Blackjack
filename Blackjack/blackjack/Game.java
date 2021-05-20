@@ -17,8 +17,10 @@ public class Game extends GameActions{
 	public void interactive(int min_bet, int max_bet, int init_balance, int shoe, int shuffle) {
 		Deck GameDeck = new Deck(shoe);
 		Player p1 = new Player(init_balance, min_bet, GameDeck);/*starting shuffled deck*/
-		Dealer dealer = new Dealer(GameDeck);
+		Dealer dealer = new Dealer();
 		Scanner scan = null; /*reads from terminal*/
+		int player_score = 0;
+		int dealer_score = 0;
 		
 		/*game is initiated so state goes to INIT*/
 		this.state = INIT;
@@ -73,26 +75,46 @@ public class Game extends GameActions{
 				break;
 			//current balance
 			case '$':
-				int balance = p1.getBalance();
+				double balance = p1.getBalance();
 				System.out.println("player current balance is " + balance);
 				break;
 			//deal
 			case 'd':
-				this.dealing(dealer, p1, GameDeck);
+				player_score = this.dealing(dealer, p1, GameDeck);
 				//System.out.println("Dealing");
 				break;
 			//hit
 			case 'h':
-				this.hitting(p1, GameDeck);
+				player_score = this.hitting(p1, GameDeck);
+				if(player_score > 21) {
+					this.setState(DEAL);
+					if(player_score < 22) {
+					dealer_score = this.standing(dealer);
+					}else {
+						dealer_score = dealer.showDealer(dealer.hand, DEAL);
+					}
+					this.setState(SHOWDOWN);
+					this.showdown(player_score, dealer_score, p1, dealer);
+					this.setState(INIT);
+					p1.clear_hand();
+					dealer.clear_hand();
+				}
 				//System.out.println("Hitting");
 				break;
 			//stand
 			case 's':
 				System.out.println("player stands");
 				this.setState(DEAL);
-				while(this.getState()==DEAL) {
-					
+				if(player_score < 22) {
+				dealer_score = this.standing(dealer);
+				}else {
+					dealer_score = dealer.showDealer(dealer.hand, DEAL);
 				}
+				this.setState(SHOWDOWN);
+				this.showdown(player_score, dealer_score, p1, dealer);
+				this.setState(INIT);
+				p1.clear_hand();
+				dealer.clear_hand();
 				break;
 			//insurance
 			case 'i':
@@ -134,7 +156,7 @@ public class Game extends GameActions{
 
 		Player p1 = new Player(init_balance, min_bet, GameDeck);/*starting shuffled deck*/
 		
-		Dealer dealer = new Dealer(GameDeck);
+		Dealer dealer = new Dealer();
 		
 
 		this.state = SIMULATION;

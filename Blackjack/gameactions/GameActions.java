@@ -14,8 +14,9 @@ public abstract class GameActions {
 	protected final static int PLAY = 2; /*player turn*/
 	protected final static int STAND = 3; /*player stands or busts*/
 	protected final static int DEAL = 4; /*dealer turn*/
-	protected final static int QUIT = 5; /*players quits*/
+	protected final static int SHOWDOWN = 5; /*game goes into showdown*/
 	protected final static int SIMULATION = 6; /*only for simulation mode*/
+	protected final static int QUIT = 7; /*player quits*/
 	protected int state = INIT; /*first state is 0*/
 	
 	/*
@@ -61,7 +62,8 @@ public abstract class GameActions {
 		}
 	}
 	
-	public void dealing(Dealer curr_dealer, Player curr_player, Deck GameDeck) {
+	public int dealing(Dealer curr_dealer, Player curr_player, Deck GameDeck) {
+		int score = 0;
 		if(this.getState() == BET) {
 			curr_player.minusBalance(curr_player.getBalance(), curr_player.getPrevious());
 			for(int i=0;i<2;i++) {
@@ -71,25 +73,21 @@ public abstract class GameActions {
 				curr_player.Add_cardtohand(GameDeck);
 			}
 			this.setState(PLAY);
-			int dummy = curr_dealer.showDealer(curr_dealer.hand, this.getState());
-			curr_player.showHand(curr_player.hand);
-			//System.out.println("Deck now has " + Deck.deckSize() + " cards in it");
+			curr_dealer.showDealer(curr_dealer.hand, this.getState());
+			score = curr_player.showHand(curr_player.hand);
 		}else {
 			this.illegalCommand('d');
 		}
-		return;
+		return score;
 	}
 	
 	/*
 	 * Method that automatically prints illegal commands depending on what char is introduced
 	 */
 	
-	protected void illegalCommand(char cmd) {
-		System.out.println(cmd + ": illegal command");
-		return;
-	}
+
 	
-	public void hitting(Player curr_player, Deck GameDeck) {
+	public int hitting(Player curr_player, Deck GameDeck) {
 		int score = 0;
 		if(this.getState() == PLAY) {
 			
@@ -104,6 +102,62 @@ public abstract class GameActions {
 			System.out.println("player busts");
 			this.setState(STAND);
 		}
+		return score;
+	}
+	
+	public int standing(Dealer dealer) {
+		int score = 0;
+		while(this.getState()==DEAL) {
+			score = dealer.showDealer(dealer.hand, this.getState());
+			if(score > 21) {
+				System.out.println("dealer busts");
+				this.setState(SHOWDOWN);
+			}
+			if(score >= 17 && score <= 22) {
+				System.out.println("dealer stands");
+				this.setState(SHOWDOWN);
+			}else if(score < 17){
+				System.out.println("dealer hits");
+				dealer.Add_cardtohand(GameDeck);
+			}					
+		}
+		if(dealer.hand.size() == 2 && score == 21) {
+			System.out.println("blackjack!!!");
+		}
+		return score;
+	}
+	public void showdown(int pscore, int dscore, Player curr_player, Dealer dealer) {
+			if(pscore > 21) { /*bust*/
+				System.out.println("player loses and his current balance is " + curr_player.getBalance());
+			}
+			else if(pscore < 22 && dscore > 21) { /*dealer busts, player doesn't*/
+				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2));
+				System.out.println("player wins and his current balance is " + curr_player.getBalance());
+			}else if(pscore > dscore) { /*player has more value on his hand than dealer, without busts*/
+				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2));
+				System.out.println("player wins and his current balance is " + curr_player.getBalance());
+			}else if(pscore == dscore) { /*player pushes*/
+				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
+				System.out.println("player pushes and his current balance is " + curr_player.getBalance());
+			}else if(pscore == 21 && curr_player.hand.size() == 2) { /*player blackjack*/
+				if(dscore != 21) { /*autowin, dealer has no blackjack*/
+					System.out.println("blackjack!!");
+					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2.5));
+					System.out.println("player pushes and his current balance is " + curr_player.getBalance());
+				}else if(dscore == 21 && dealer.hand.size() == 2) { /*dealer has blackjack as well*/
+					System.out.println("blackjack!!");
+					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
+					System.out.println("player pushes and his current balance is " + curr_player.getBalance());
+				}
+			}else {/*dealer has higher valued hand*/
+				System.out.println("player loses and his current balance is " + curr_player.getBalance());
+			}
+			
+	}
+	
+	
+	protected void illegalCommand(char cmd) {
+		System.out.println(cmd + ": illegal command");
 		return;
 	}
 }

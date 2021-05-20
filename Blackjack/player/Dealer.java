@@ -23,11 +23,10 @@ public class Dealer {
 	
 	/*Constructors*/
 	/*to use when initializing the new player*/
-	public Dealer(Deck Gamedeck){
-		for(int i=0; i<2;i++) {
-			Card entry = Deck.draw();
-			this.hand.add(entry);
-		}
+	public Dealer(){
+		/*
+		 * Empty constructor, since we add cards to the dealer when dealing
+		 */
 	}
 	
 	/*Methods*/
@@ -84,7 +83,13 @@ public class Dealer {
 				total += Card.cardvalue(hand.get(i));
 			}
 			
+			if(hand.size() == 2 && total == 21) {
+				
+			}
+			
 			System.out.println(cards + "(" + total + ")");
+			
+			
 		}
 		
 		return total;
