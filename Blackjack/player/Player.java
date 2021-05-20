@@ -108,7 +108,32 @@ public class Player {
 	}
 
 
-	//card counting functions
+	/*Table is 1 for hard, 2 for soft and 3 for pairs*/
+	public int getTable(LinkedList<Card> hand){
+		int numberOfAces = 0;
+		int numberOfPairs = 0;
+		String card = "";
+
+		Iterator<Card> iterator = hand.iterator();
+		
+		while(iterator.hasNext()) {
+			card = card + iterator.next();
+		}
+
+		char checkPair = card.charAt(0);
+		
+		for(int i=0; i < card.length(); i++){
+			if(card.charAt(i) == 'A')
+				numberOfAces++;
+			if(card.charAt(i) == checkPair)
+				numberOfPairs++;
+		} 
+		if (numberOfPairs == 2) return 3;
+		if (numberOfAces == 0) return 1;
+		if (numberOfAces == 1) return 2;
+		if (numberOfAces == 2) return 3;
+		return 0;
+	}
 
 	public int BShard(int playerScore, int dealerScore){
 		if (playerScore <= 8) return 1;
@@ -151,9 +176,8 @@ public class Player {
 		}
 		return 2;
 	}
-	public int basicStrategy(int dealerScore){
+	public int basicStrategy(int dealerScore, int table){
 		int playerScore = handscore();
-		int table = 1;
 		int nextMove = 0;
 
 		if (table == 1){
@@ -161,6 +185,10 @@ public class Player {
 		}		
 		if (table == 2){
 			nextMove = BSsoft(playerScore, dealerScore);
+		}
+		if (table == 3){
+			//TODO
+			nextMove = 6;
 		}
 		return nextMove;
 	}

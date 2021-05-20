@@ -138,32 +138,6 @@ public class Main {
 			blackjack.simulation(min_bet, max_bet, balance, shoe, shuffle, s_number, strat);
 
 		}
-		/*switch(args[0]) {
-		case "-i": System.out.println("Interactive mode");
-
-				p1 = new Player(balance);
-				decks Deck = new decks(shoe);
-				System.out.println(p1.playertoString());
-				break;
-		case "-d": System.out.println("debug mode");
-				min_bet = Integer.parseInt(args[1]);
-				max_bet = Integer.parseInt(args[2]);
-				balance = Integer.parseInt(args[3]);
-				shoe_file = args[4];
-				cmf_file = args[5];
-				break;
-		case "-s": System.out.println("simulation mode"); 
-				min_bet = Integer.parseInt(args[1]);
-				max_bet = Integer.parseInt(args[2]);
-				balance = Integer.parseInt(args[3]);
-				shoe = Integer.parseInt(args[4]);
-				shuffle = Integer.parseInt(args[5]);
-				s_number = Integer.parseInt(args[6]);
-				strat = args[7];               
-				break;
-		default: System.out.println("Unknown input parameter");
-				break;
-		}*/
 		
 	}
 	

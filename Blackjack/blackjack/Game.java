@@ -157,6 +157,10 @@ public class Game extends GameActions{
 		Player p1 = new Player(init_balance, min_bet, GameDeck);/*starting shuffled deck*/
 		
 		Dealer dealer = new Dealer();
+
+		int playerScore = 0;
+		int dealerScoreShowing = 0;
+		int dealerScoreFull = 0;
 		
 
 		this.state = SIMULATION;
@@ -166,9 +170,16 @@ public class Game extends GameActions{
 			dealer.Add_cardtohand(GameDeck);
 		}
 
+		//this is just for debugging
+		//p1.showHand(p1.hand);
+
+		//computes which table (1,2 or 3) we will use
+		int table = p1.getTable(p1.hand);
+
+
 		switch(strategy) {
 		case "BS" :
-			while(true){
+			while(state != QUIT) {
 				// Shows player hand
 				p1.showHand(p1.hand);
 
@@ -176,12 +187,17 @@ public class Game extends GameActions{
 				int aux = dealer.showDealer(dealer.hand, this.getState());
 
 				// get the dealer's card that is showing
-				int dealerScore = dealer.dealerHandScore(this.getState());
+				dealerScoreShowing = dealer.dealerHandScore(this.getState());
+				dealerScoreFull = dealer.dealerHandScore(0);//since we pass zero, it will not read as simulation mode
+				System.out.println("\nDealer score : " + dealerScoreShowing);
+				System.out.println("\nFull Dealer score : " + dealerScoreFull);
+
 
 				// Compute next move for the player
-				int nextMove = p1.basicStrategy(dealerScore);
-				System.out.println(nextMove);
+				int nextMove = p1.basicStrategy(dealerScoreShowing, table);
+				System.out.println("\n" + nextMove);
 
+				this.setState(PLAY);
 				switch(nextMove){
 				//1 - hit
 				//2 - stand
@@ -190,23 +206,49 @@ public class Game extends GameActions{
 				//5 - double if possible, else stand
 				//6 - surrender if possible, else hit
 				case 1 :
-					this.hitting(p1, GameDeck);
+					playerScore = this.hitting(p1, GameDeck);
+					if(playerScore > 21) {
+						this.setState(DEAL);
+						if(playerScore < 22) {
+							dealerScoreFull = this.standing(dealer);
+						}else {
+							dealerScoreFull = dealer.showDealer(dealer.hand, DEAL);
+						}
+						this.setState(SHOWDOWN);
+						this.showdown(playerScore, dealerScoreFull, p1, dealer);
+						this.setState(QUIT);
+						p1.clear_hand();
+						dealer.clear_hand();
+					}
 					break;
 				case 2 : 
-					System.out.println("player stands");
 					this.setState(DEAL);
-					while(this.getState()==DEAL) {
-						
+					if(playerScore < 22) {
+						dealerScoreFull = this.standing(dealer);
+					}else {
+						dealerScoreFull = dealer.showDealer(dealer.hand, DEAL);
 					}
+					this.setState(SHOWDOWN);
+					this.showdown(playerScore, dealerScoreFull, p1, dealer);
+					this.setState(QUIT);
+					p1.clear_hand();
+					dealer.clear_hand();
 					break;
 				case 3 : 
 					System.out.println("Splitting");
+					this.setState(QUIT);
 					break;	
 				case 4 :
 					System.out.println("Please wait, feature under construction");
+					this.setState(QUIT);
 					break;
 				case 5 :
 					System.out.println("Please wait, feature also under construction");
+					this.setState(QUIT);
+					break;
+				case 6 :
+					System.out.println("Nonoo");
+					this.setState(QUIT);
 					break;
 				}
 			}
