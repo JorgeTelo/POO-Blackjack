@@ -260,6 +260,28 @@ public class Game extends GameActions{
 		case "BS-AF" : 
 			break;
 		case "HL" : 
+			// Shows player hand
+			p1.showHand(p1.hand);
+
+			// Shows dealer's hand
+			int aux = dealer.showDealer(dealer.hand, DEAL);
+
+			// get the dealer's card that is showing
+			dealerScoreShowing = dealer.dealerHandScore(this.getState());
+			dealerScoreFull = dealer.dealerHandScore(0);//since we pass zero, it will not read as simulation mode
+			System.out.println("\nDealer score : " + dealerScoreShowing);
+			System.out.println("\nFull Dealer score : " + dealerScoreFull);
+
+			int runningCount = 0;
+
+			runningCount = runningCount + p1.assignValueToRank(p1.hand);
+			runningCount = runningCount + dealer.assignValueToRank(dealer.hand);
+			System.out.println("\n\n" + runningCount);
+
+			//HOW TO GET NUMBER OF DECKS REMAINING???
+			int numberOfDecksRemaining = 0;
+			float trueCount = 0;
+			trueCount = runningCount/numberOfDecksRemaining;
 			break;
 		case "HL-AF" :
 			break;
