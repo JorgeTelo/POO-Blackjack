@@ -93,5 +93,41 @@ public class Dealer {
 		
 		return total;
 	}
+
+	public int rankConversionTable(char rank){
+		switch(rank){
+		case '2' : return 1; 
+		case '3' : return 1;
+		case '4' : return 1;
+		case '5' : return 1; 
+		case '6' : return 1;
+		case '7' : return 0; 
+		case '8' : return 0; 
+		case '9' : return 0; 
+		case '1' : return -1; 
+		case 'J' : return -1; 
+		case 'Q' : return -1; 
+		case 'K' : return -1; 
+		case 'A' : return -1;
+		}
+		return 0;
+	}
+	
+	public int assignValueToRank(LinkedList<Card> hand){
+		int auxRunningCount = 0;
+		int aux = 0;
+		String card = "";
+
+		Iterator<Card> iterator = hand.iterator();
+		
+		while(iterator.hasNext()) {
+			card = "";
+			card = card + iterator.next();
+			aux = rankConversionTable(card.charAt(0));
+			auxRunningCount = auxRunningCount + aux;
+		}
+
+		return auxRunningCount;
+	}
 	
 }

@@ -192,8 +192,103 @@ public class Player {
 		}
 		return nextMove;
 	}
-	
 
+	public int rankConversionTable(char rank){
+		switch(rank){
+		case '2' : return 1; 
+		case '3' : return 1;
+		case '4' : return 1;
+		case '5' : return 1; 
+		case '6' : return 1;
+		case '7' : return 0; 
+		case '8' : return 0; 
+		case '9' : return 0; 
+		case '1' : return -1; 
+		case 'J' : return -1; 
+		case 'Q' : return -1; 
+		case 'K' : return -1; 
+		case 'A' : return -1;
+		}
+		return 100;
+	}
+	public int assignValueToRank(LinkedList<Card> hand){
+		int auxRunningCount = 0;
+		int aux = 0;
+		String card = "";
+
+		Iterator<Card> iterator = hand.iterator();
+		
+		while(iterator.hasNext()) {
+			card = "";
+			card = card + iterator.next();
+			aux = rankConversionTable(card.charAt(0));
+			auxRunningCount = auxRunningCount + aux;
+		}
+
+		return auxRunningCount;
+	}
+	
+	public int Illustrious18(){
+	//1 - hit
+	//2 - stand
+	//3 - split
+	//4 - double 
+	//5 - double if possible, else stand
+	//6 - surrender if possible, else
+		switch(kak){
+		case "16vT" :
+			if (trueCount >= 0) return 2;
+			return 1;
+		}
+		case "15vT" :
+			if (trueCount >= 4) return 2;
+			return 0;
+		case "TTv5" :
+			if (trueCount >= 5) return 3;
+			return 2;
+		case "TTv6" :
+			if (trueCount >= 4) return 3;
+			return 2;
+		case "10vT" :
+			if (trueCount >= 4) return 4;
+			return 1;
+		case "12v3" :
+			if (trueCount >= 2) return 2;
+			return 1;
+		case "12v2" :
+			if (trueCount >= 3) return 3;
+			return 1;
+		case "11vA" :
+			if (trueCount >= 1) return 4;
+			return 1;
+		case "9v2" :
+			if (trueCount >= 1) return 4;
+			return 1;
+		case "10vA" :
+			if (trueCount >= 4) return 4;
+			return 1;
+		case "9v7" :
+			if (trueCount >= 3) return 4;
+			return 1;
+		case "16v9" :
+			if (trueCount >= 5) return 2;
+			return 1;
+		case "13v2" :
+			if (trueCount >= -1) return 2;
+			return 1;
+		case "12v4" :
+			if (trueCount >= 0) return 2;
+			return 1;
+		case "12v5" :
+			if (trueCount >= -2) return 2;
+			return 1;
+		case "12v6" :
+			if (trueCount >= -1) return 2;
+			return 1;
+		case "13v3" :
+			if (trueCount >= -1) return 2;
+			return 1;
+	}
 	
 	
 }
