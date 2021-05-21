@@ -269,11 +269,12 @@ public class Player {
 	//4 - double 
 	//5 - double if possible, else stand
 	//6 - surrender if possible, else
+		String kak = "16vT";
+		int trueCount = 0;
 		switch(kak){
 		case "16vT" :
 			if (trueCount >= 0) return 2;
 			return 1;
-		}
 		case "15vT" :
 			if (trueCount >= 4) return 2;
 			return 0;
@@ -322,6 +323,8 @@ public class Player {
 		case "13v3" :
 			if (trueCount >= -1) return 2;
 			return 1;
+		}
+		return 0;
 	}
 	
 	

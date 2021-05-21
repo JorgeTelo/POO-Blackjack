@@ -172,7 +172,8 @@ public abstract class GameActions {
 				System.out.println("player loses and his current balance is " + curr_player.getBalance());
 			}		
 	}
-	public void doublingdown(Player curr_player, Dealer dealer) {
+	public Boolean doublingdown(Player curr_player, Dealer dealer) {
+		//return true if doublingdown is possible, False otherwise
 		int player_score = 0;
 		int dealer_score = 0;
 		/*checks if player hand is 9 or higher*/
@@ -198,9 +199,14 @@ public abstract class GameActions {
 			this.setState(INIT);
 			curr_player.clear_hand();
 			dealer.clear_hand();
+
+			curr_player.updatePrevious(curr_player.getPrevious()/2);
+
+			return true;
 			
 		}
 		curr_player.updatePrevious(curr_player.getPrevious()/2);
+		return false;
 		
 
 	}

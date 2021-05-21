@@ -118,7 +118,7 @@ public class Dealer {
 		return 0;
 	}
 	
-	public int assignValueToRank(LinkedList<Card> hand){
+	public int assignValueToRankD(LinkedList<Card> hand){
 		int auxRunningCount = 0;
 		int aux = 0;
 		String card = "";

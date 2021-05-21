@@ -132,8 +132,9 @@ public class Game extends GameActions{
 				break;
 			//double
 			case '2':
-				this.doublingdown(p1, dealer);
-				//System.out.println("Doubling Down");
+				//aux is useless here, only used for simulation
+				Boolean aux = this.doublingdown(p1, dealer);
+				System.out.println("Doubling Down");
 				break;
 			//player quits
 			case 'q':
@@ -193,8 +194,8 @@ public class Game extends GameActions{
 				// get the dealer's card that is showing
 				dealerScoreShowing = dealer.dealerHandScore(this.getState());
 				dealerScoreFull = dealer.dealerHandScore(0);//since we pass zero, it will not read as simulation mode
-				System.out.println("\nDealer score : " + dealerScoreShowing);
-				System.out.println("\nFull Dealer score : " + dealerScoreFull);
+				System.out.println("Dealer score : " + dealerScoreShowing + " Full : " + dealerScoreFull);
+
 
 
 				// Compute next move for the player
@@ -243,12 +244,40 @@ public class Game extends GameActions{
 					this.setState(QUIT);
 					break;	
 				case 4 :
-					System.out.println("Please wait, feature under construction");
-					this.setState(QUIT);
+					Boolean doubleIsPossible1 = this.doublingdown(p1, dealer);
+					if (doubleIsPossible1 == false){
+					//if doubledown was not possible, hit
+						playerScore = this.hitting(p1, GameDeck);
+						if(playerScore > 21) {
+							this.setState(DEAL);
+							if(playerScore < 22) {
+								dealerScoreFull = this.standing(dealer);
+							}else {
+								dealerScoreFull = dealer.showDealer(dealer.hand, DEAL);
+							}
+							this.setState(SHOWDOWN);
+							this.showdown(playerScore, dealerScoreFull, p1, dealer);
+							this.setState(QUIT);
+							p1.clear_hand();
+							dealer.clear_hand();
+						}
+					}
 					break;
 				case 5 :
-					System.out.println("Please wait, feature also under construction");
-					this.setState(QUIT);
+					Boolean doubleIsPossible2 = this.doublingdown(p1, dealer);
+					if(doubleIsPossible2 == false){
+						this.setState(DEAL);
+						if(playerScore < 22) {
+							dealerScoreFull = this.standing(dealer);
+						}else {
+							dealerScoreFull = dealer.showDealer(dealer.hand, DEAL);
+						}
+						this.setState(SHOWDOWN);
+						this.showdown(playerScore, dealerScoreFull, p1, dealer);
+						this.setState(QUIT);
+						p1.clear_hand();
+						dealer.clear_hand();
+					}	
 					break;
 				case 6 :
 					System.out.println("Nonoo");
@@ -256,7 +285,7 @@ public class Game extends GameActions{
 					break;
 				}
 			}
-			//break;
+			break;
 		case "BS-AF" : 
 			break;
 		case "HL" : 
@@ -269,13 +298,12 @@ public class Game extends GameActions{
 			// get the dealer's card that is showing
 			dealerScoreShowing = dealer.dealerHandScore(this.getState());
 			dealerScoreFull = dealer.dealerHandScore(0);//since we pass zero, it will not read as simulation mode
-			System.out.println("\nDealer score : " + dealerScoreShowing);
-			System.out.println("\nFull Dealer score : " + dealerScoreFull);
+			System.out.println("Dealer score : " + dealerScoreShowing + " Full : " + dealerScoreFull);
 
 			int runningCount = 0;
 
 			runningCount = runningCount + p1.assignValueToRank(p1.hand);
-			runningCount = runningCount + dealer.assignValueToRank(dealer.hand);
+			runningCount = runningCount + dealer.assignValueToRankD(dealer.hand);
 			System.out.println("\n\n" + runningCount);
 
 			//HOW TO GET NUMBER OF DECKS REMAINING???
@@ -285,8 +313,9 @@ public class Game extends GameActions{
 			break;
 		case "HL-AF" :
 			break;
-		}
 
+		}
 				
 	}
 }
+
