@@ -157,14 +157,14 @@ public class Game extends GameActions{
 	}
 
 	public void simulation(int min_bet, int max_bet, int init_balance, int shoe, int shuffle, int s_number, String strategy) {
-		int amount = init_balance;
-
 		Deck GameDeck = new Deck(shoe);
 
 		Player p1 = new Player(init_balance, min_bet, GameDeck);/*starting shuffled deck*/
 		
 		Dealer dealer = new Dealer();
-		while(amount >= 0){
+
+		int numberOfShufflesLeft = s_number;
+		while(numberOfShufflesLeft > 0){
 		
 			
 
@@ -175,18 +175,23 @@ public class Game extends GameActions{
 
 			this.state = SIMULATION;
 
+
 			for(int i=0;i<2;i++) {
 				p1.Add_cardtohand(GameDeck);
 				dealer.Add_cardtohand(GameDeck);
 			}
 
-
+			//this variable tells which action the player should make
 			int nextMove = 0;
+
+			//this variable will only be necessary for AceFive
+			int aceFiveCount = 0; 
 			
 			while(state != QUIT) {
 
-				switch(strategy) {
-				case "BS" :
+
+				if ( (strategy.equals("BS")) || (strategy.equals("BS-AF")) ){
+
 					// Shows player hand
 					p1.showHand(p1.hand);
 
@@ -201,15 +206,25 @@ public class Game extends GameActions{
 					//computes which table (1,2 or 3) we will use
 					int table = p1.getTable(p1.hand);
 
+					if (strategy == "BS-AF"){
+						aceFiveCount = p1.countFivesAndAcesPlayer(p1.hand);
+						aceFiveCount = aceFiveCount + dealer.countFivesAndAcesDealer(dealer.hand);
+
+						if (aceFiveCount >= 2)
+							this.betting(p1, p1.getPrevious()*2);
+						else 
+							this.betting(p1, min_bet);
+					}
+
 					// Compute next move for the player
 					nextMove = p1.basicStrategy(dealerScoreShowing, table);
 					System.out.println("\n" + nextMove);
 
 					
+
 					break;
-				case "BS-AF" : 
-					break;
-				case "HL" : 
+
+				}else if ( (strategy.equals("HL")) || (strategy.equals("HL-AF")) ){ 
 					// Shows player hand
 					playerScore = p1.showHand(p1.hand);
 
@@ -237,9 +252,6 @@ public class Game extends GameActions{
 					System.out.println("nextMove " + nextMove);
 
 					break;
-				case "HL-AF" :
-					break;
-
 				}
 				this.setState(PLAY);
 				switch(nextMove){
@@ -260,11 +272,13 @@ public class Game extends GameActions{
 						}else {
 							dealerScoreFull = dealer.showDealer(dealer.hand, DEAL);
 						}
+						
 						this.setState(SHOWDOWN);
 						this.showdown(playerScore, dealerScoreFull, p1, dealer);
 						this.setState(QUIT);
 						p1.clear_hand();
 						dealer.clear_hand();
+						
 					}
 					break;
 				case 2 : 
@@ -277,6 +291,7 @@ public class Game extends GameActions{
 					this.setState(SHOWDOWN);
 					this.showdown(playerScore, dealerScoreFull, p1, dealer);
 					this.setState(QUIT);
+					numberOfShufflesLeft--;
 					p1.clear_hand();
 					dealer.clear_hand();
 					break;
@@ -296,11 +311,14 @@ public class Game extends GameActions{
 							}else {
 								dealerScoreFull = dealer.showDealer(dealer.hand, DEAL);
 							}
+							
 							this.setState(SHOWDOWN);
 							this.showdown(playerScore, dealerScoreFull, p1, dealer);
 							this.setState(QUIT);
+							numberOfShufflesLeft--;
 							p1.clear_hand();
 							dealer.clear_hand();
+							
 						}
 					}
 					break;
@@ -313,11 +331,14 @@ public class Game extends GameActions{
 						}else {
 							dealerScoreFull = dealer.showDealer(dealer.hand, DEAL);
 						}
+						
 						this.setState(SHOWDOWN);
 						this.showdown(playerScore, dealerScoreFull, p1, dealer);
 						this.setState(QUIT);
+						numberOfShufflesLeft--;
 						p1.clear_hand();
 						dealer.clear_hand();
+						
 					}	
 					break;
 				case 6 :
@@ -331,7 +352,7 @@ public class Game extends GameActions{
 				}
 			}
 		}
-		this.statistics(p1, dealer);
+		//this.statistics(p1, dealer);
 
 				
 	}

@@ -134,5 +134,22 @@ public class Dealer {
 
 		return auxRunningCount;
 	}
+
+	public int countFivesAndAcesDealer(LinkedList<Card> hand){
+		String cards = "";
+		int counter = 0;
+		
+		Iterator<Card> iterator = hand.iterator();
+		
+		while(iterator.hasNext()) {
+			cards = cards +iterator.next() + " ";
+		}
+		for (int i=0; i<cards.length(); i++){
+			if (cards.charAt(i) == '5') counter++;
+			if (cards.charAt(i) == 'A') counter--;
+		}
+
+		return counter;
+	}
 	
 }
