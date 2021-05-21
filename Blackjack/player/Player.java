@@ -266,19 +266,27 @@ public class Player {
 	//1 - hit
 	//2 - stand
 	//3 - split
-	//4 - double 
-	//5 - surrender
-	//6 - basic strategy
+	//4 - double if possible, else hit
+	//5 - double if possible, else stand
+	//6 - surrender if possible, else hit
+	//7 - basic strategy
 		String kak = "16vT";
+		Iterator<Card> iterator = hand.iterator();
 
-		switch(kak){
+		String dealerCard = "" + iterator.next();
+		String result = String.valueOf(playerScore) + "v" + dealerCard.substring(0,1);
+
+		
+		switch(result){
 		//ILUSTRIOUS18
+
 		case "16vT" :
 			if (trueCount >= 0) return 2;
 			return 1;
 		case "15vT" :
+			if (trueCount >= 0 && trueCount <= 3) return 6;
 			if (trueCount >= 4) return 2;
-			return 0;
+			return 1;
 		case "TTv5" :
 			if (trueCount >= 5) return 3;
 			return 2;
@@ -327,19 +335,17 @@ public class Player {
 
 		//FAB4
 		case "14vT" :
-			if (trueCount >= 3) return 5;
-			return 6;
-		case "15vT" :
-			if (trueCount >= 0) return 5;
-			return 6;
+			if (trueCount >= 3) return 6;
+			return 7;			
 		case "15v9" :
-			if (trueCount >= 2) return 5;
-			return 6;
+			if (trueCount >= 2) return 6;
+			return 7;
 		case "15vA" :
-			if (trueCount >= 1) return 5;
-			return 6;
+			if (trueCount >= 1) return 6;
+			return 7;
 		}
-		return 0;
+		
+		return 2;
 	}
 
 	
