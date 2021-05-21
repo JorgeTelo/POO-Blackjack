@@ -103,18 +103,20 @@ public class Game extends GameActions{
 				break;
 			//stand
 			case 's':
-				System.out.println("player stands");
-				this.setState(DEAL);
-				if(player_score < 22) {
-				dealer_score = this.standing(dealer);
-				}else {
-					dealer_score = dealer.showDealer(dealer.hand, DEAL);
-				}
-				this.setState(SHOWDOWN);
-				this.showdown(player_score, dealer_score, p1, dealer);
-				this.setState(INIT);
-				p1.clear_hand();
-				dealer.clear_hand();
+				if(cmdln.length() < 2) {
+					System.out.println("player stands");
+					this.setState(DEAL);
+					if(player_score < 22) {
+						dealer_score = this.standing(dealer);
+					}else {
+						dealer_score = dealer.showDealer(dealer.hand, DEAL);
+					}
+					this.setState(SHOWDOWN);
+					this.showdown(player_score, dealer_score, p1, dealer);
+					this.setState(INIT);
+					p1.clear_hand();
+					dealer.clear_hand();
+					}
 				break;
 			//insurance
 			case 'i':
@@ -130,7 +132,8 @@ public class Game extends GameActions{
 				break;
 			//double
 			case '2':
-				System.out.println("Doubling Down");
+				this.doublingdown(p1, dealer);
+				//System.out.println("Doubling Down");
 				break;
 			//player quits
 			case 'q':
@@ -145,7 +148,8 @@ public class Game extends GameActions{
 				break;
 			//statistics
 			case "st":
-				System.out.println("Statistics");
+				this.statisics(p1, dealer);
+				//System.out.println("Statistics");
 				break;
 			}
 		}

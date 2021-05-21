@@ -18,6 +18,8 @@ public class Dealer {
 	protected final static int QUIT = 5; /*players quits*/
 	protected final static int SIMULATION = 6; /*only for simulation*/
 	protected int state = INIT; /*first state is 0*/
+	
+	public int dbj;
 
 	public LinkedList<Card> hand = new LinkedList<Card>();
 	
@@ -31,6 +33,9 @@ public class Dealer {
 	
 	/*Methods*/
 
+	public void addDBJ() {
+		this.dbj++;
+	}
 	/*Adds new card to current hand*/
 	public void Add_cardtohand(Deck GameDeck) {
 		Card entry = Deck.draw();

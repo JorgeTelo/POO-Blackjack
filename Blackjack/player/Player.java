@@ -12,6 +12,19 @@ public class Player {
 	private double curr_balance;
 	private final int initial_balance;
 	private int previousBet;
+	
+	/*
+	 * these 4 fields save the amount of times each event has happened
+	 */
+	public int win;
+	public int lose;
+	public int push;
+	public int pbj;
+	public double gain;
+	
+	/*
+	 * Linkedlist that saves the players hand, easier to do methods after
+	 */
 	public LinkedList<Card> hand = new LinkedList<Card>();
 	
 	/*Constructors*/
@@ -41,6 +54,27 @@ public class Player {
 	public void minusBalance(double d, int change) {
 		this.curr_balance = d - change;
 	}
+	
+	public void addWin() {
+		this.win++;
+	}
+	
+	public void addLose() {
+		this.lose++;
+	}
+	
+	public void addPush() {
+		this.push++;
+	}
+	
+	public void addPBJ() {
+		this.pbj++;
+	}
+	
+	public void playerGain() {
+		this.gain = (this.getInitialBalance() * 100) / this.getBalance();  
+	}
+
 	/*Adds new card to current hand*/
 	public void Add_cardtohand(Deck GameDeck) {
 		Card entry = Deck.draw();
