@@ -149,7 +149,7 @@ public class Game extends GameActions{
 				break;
 			//statistics
 			case "st":
-				this.statisics(p1, dealer);
+				this.statistics(p1, dealer);
 				//System.out.println("Statistics");
 				break;
 			}
@@ -157,132 +157,101 @@ public class Game extends GameActions{
 	}
 
 	public void simulation(int min_bet, int max_bet, int init_balance, int shoe, int shuffle, int s_number, String strategy) {
+		int amount = init_balance;
+
 		Deck GameDeck = new Deck(shoe);
 
 		Player p1 = new Player(init_balance, min_bet, GameDeck);/*starting shuffled deck*/
 		
 		Dealer dealer = new Dealer();
-
-		int playerScore = 0;
-		int dealerScoreShowing = 0;
-		int dealerScoreFull = 0;
+		while(amount >= 0){
 		
+			
 
-		this.state = SIMULATION;
+			int playerScore = 0;
+			int dealerScoreShowing = 0;
+			int dealerScoreFull = 0;
+			
 
-		for(int i=0;i<2;i++) {
-			p1.Add_cardtohand(GameDeck);
-			dealer.Add_cardtohand(GameDeck);
-		}
+			this.state = SIMULATION;
 
-
-		int nextMove = 0;
-		
-		while(state != QUIT) {
-
-			switch(strategy) {
-			case "BS" :
-				// Shows player hand
-				p1.showHand(p1.hand);
-
-				// Shows dealer's hand
-				int auxDL = dealer.showDealer(dealer.hand, this.getState());
-
-				// get the dealer's card that is showing
-				dealerScoreShowing = dealer.dealerHandScore(this.getState());
-				dealerScoreFull = dealer.dealerHandScore(0);//since we pass zero, it will not read as simulation mode
-				System.out.println("Dealer score : " + dealerScoreShowing + " Full : " + dealerScoreFull);
-
-				//computes which table (1,2 or 3) we will use
-				int table = p1.getTable(p1.hand);
-
-				// Compute next move for the player
-				nextMove = p1.basicStrategy(dealerScoreShowing, table);
-				System.out.println("\n" + nextMove);
-
-				
-				break;
-			case "BS-AF" : 
-				break;
-			case "HL" : 
-				// Shows player hand
-				playerScore = p1.showHand(p1.hand);
-
-				// Shows dealer's hand
-				int auxHL = dealer.showDealer(dealer.hand, DEAL);
-
-				// get the dealer's card that is showing
-				dealerScoreShowing = dealer.dealerHandScore(this.getState());
-				dealerScoreFull = dealer.dealerHandScore(0);//since we pass zero, it will not read as simulation mode
-				System.out.println("Dealer score : " + dealerScoreShowing + " Full : " + dealerScoreFull);
-
-				int runningCount = 0;
-
-				runningCount = runningCount + p1.assignValueToRank(p1.hand);
-				runningCount = runningCount + dealer.assignValueToRankD(dealer.hand);
-				System.out.println("\n\nRunning count" + runningCount);
-
-				//HOW TO GET NUMBER OF DECKS REMAINING???
-				int numberOfDecksRemaining = s_number-1;
-
-				float trueCount = (runningCount/numberOfDecksRemaining);
-
-				nextMove = p1.Illustrious18ANDFab4(trueCount, playerScore, dealer.hand);
-
-				System.out.println("nextMove " + nextMove);
-
-				break;
-			case "HL-AF" :
-				break;
-
+			for(int i=0;i<2;i++) {
+				p1.Add_cardtohand(GameDeck);
+				dealer.Add_cardtohand(GameDeck);
 			}
-			this.setState(PLAY);
-			switch(nextMove){
-			//1 - hit
-			//2 - stand
-			//3 - split
-			//4 - double if possible, else hit
-			//5 - double if possible, else stand
-			//6 - surrender if possible, else hit
-			//7 - basic strategy
 
-			case 1 :
-				playerScore = this.hitting(p1, GameDeck);
-				if(playerScore > 21) {
-					this.setState(DEAL);
-					if(playerScore < 22) {
-						dealerScoreFull = this.standing(dealer);
-					}else {
-						dealerScoreFull = dealer.showDealer(dealer.hand, DEAL);
-					}
-					this.setState(SHOWDOWN);
-					this.showdown(playerScore, dealerScoreFull, p1, dealer);
-					this.setState(QUIT);
-					p1.clear_hand();
-					dealer.clear_hand();
+
+			int nextMove = 0;
+			
+			while(state != QUIT) {
+
+				switch(strategy) {
+				case "BS" :
+					// Shows player hand
+					p1.showHand(p1.hand);
+
+					// Shows dealer's hand
+					int auxDL = dealer.showDealer(dealer.hand, this.getState());
+
+					// get the dealer's card that is showing
+					dealerScoreShowing = dealer.dealerHandScore(this.getState());
+					dealerScoreFull = dealer.dealerHandScore(0);//since we pass zero, it will not read as simulation mode
+					System.out.println("Dealer score : " + dealerScoreShowing + " Full : " + dealerScoreFull);
+
+					//computes which table (1,2 or 3) we will use
+					int table = p1.getTable(p1.hand);
+
+					// Compute next move for the player
+					nextMove = p1.basicStrategy(dealerScoreShowing, table);
+					System.out.println("\n" + nextMove);
+
+					
+					break;
+				case "BS-AF" : 
+					break;
+				case "HL" : 
+					// Shows player hand
+					playerScore = p1.showHand(p1.hand);
+
+					// Shows dealer's hand
+					int auxHL = dealer.showDealer(dealer.hand, DEAL);
+
+					// get the dealer's card that is showing
+					dealerScoreShowing = dealer.dealerHandScore(this.getState());
+					dealerScoreFull = dealer.dealerHandScore(0);//since we pass zero, it will not read as simulation mode
+					System.out.println("Dealer score : " + dealerScoreShowing + " Full : " + dealerScoreFull);
+
+					int runningCount = 0;
+
+					runningCount = runningCount + p1.assignValueToRank(p1.hand);
+					runningCount = runningCount + dealer.assignValueToRankD(dealer.hand);
+					System.out.println("\n\nRunning count" + runningCount);
+
+					//HOW TO GET NUMBER OF DECKS REMAINING???
+					int numberOfDecksRemaining = s_number-1;
+
+					float trueCount = (runningCount/numberOfDecksRemaining);
+
+					nextMove = p1.Illustrious18ANDFab4(trueCount, playerScore, dealer.hand);
+
+					System.out.println("nextMove " + nextMove);
+
+					break;
+				case "HL-AF" :
+					break;
+
 				}
-				break;
-			case 2 : 
-				this.setState(DEAL);
-				if(playerScore < 22) {
-					dealerScoreFull = this.standing(dealer);
-				}else {
-					dealerScoreFull = dealer.showDealer(dealer.hand, DEAL);
-				}
-				this.setState(SHOWDOWN);
-				this.showdown(playerScore, dealerScoreFull, p1, dealer);
-				this.setState(QUIT);
-				p1.clear_hand();
-				dealer.clear_hand();
-				break;
-			case 3 : 
-				System.out.println("Splitting");
-				this.setState(QUIT);
-				break;	
-			case 4 :
-				Boolean doubleIsPossible1 = this.doublingdown(p1, dealer);
-				if (doubleIsPossible1 == false){
-				//if doubledown was not possible, hit
+				this.setState(PLAY);
+				switch(nextMove){
+				//1 - hit
+				//2 - stand
+				//3 - split
+				//4 - double if possible, else hit
+				//5 - double if possible, else stand
+				//6 - surrender if possible, else hit
+				//7 - basic strategy
+
+				case 1 :
 					playerScore = this.hitting(p1, GameDeck);
 					if(playerScore > 21) {
 						this.setState(DEAL);
@@ -297,11 +266,8 @@ public class Game extends GameActions{
 						p1.clear_hand();
 						dealer.clear_hand();
 					}
-				}
-				break;
-			case 5 :
-				Boolean doubleIsPossible2 = this.doublingdown(p1, dealer);
-				if(doubleIsPossible2 == false){
+					break;
+				case 2 : 
 					this.setState(DEAL);
 					if(playerScore < 22) {
 						dealerScoreFull = this.standing(dealer);
@@ -313,18 +279,60 @@ public class Game extends GameActions{
 					this.setState(QUIT);
 					p1.clear_hand();
 					dealer.clear_hand();
-				}	
-				break;
-			case 6 :
-				System.out.println("Nonoo");
-				this.setState(QUIT);
-				break;
-			case 7 : 
-				System.out.println("Switching to BS");
-				strategy = "BS";
-				break;
+					break;
+				case 3 : 
+					System.out.println("Splitting");
+					this.setState(QUIT);
+					break;	
+				case 4 :
+					Boolean doubleIsPossible1 = this.doublingdown(p1, dealer);
+					if (doubleIsPossible1 == false){
+					//if doubledown was not possible, hit
+						playerScore = this.hitting(p1, GameDeck);
+						if(playerScore > 21) {
+							this.setState(DEAL);
+							if(playerScore < 22) {
+								dealerScoreFull = this.standing(dealer);
+							}else {
+								dealerScoreFull = dealer.showDealer(dealer.hand, DEAL);
+							}
+							this.setState(SHOWDOWN);
+							this.showdown(playerScore, dealerScoreFull, p1, dealer);
+							this.setState(QUIT);
+							p1.clear_hand();
+							dealer.clear_hand();
+						}
+					}
+					break;
+				case 5 :
+					Boolean doubleIsPossible2 = this.doublingdown(p1, dealer);
+					if(doubleIsPossible2 == false){
+						this.setState(DEAL);
+						if(playerScore < 22) {
+							dealerScoreFull = this.standing(dealer);
+						}else {
+							dealerScoreFull = dealer.showDealer(dealer.hand, DEAL);
+						}
+						this.setState(SHOWDOWN);
+						this.showdown(playerScore, dealerScoreFull, p1, dealer);
+						this.setState(QUIT);
+						p1.clear_hand();
+						dealer.clear_hand();
+					}	
+					break;
+				case 6 :
+					System.out.println("Nonoo");
+					this.setState(QUIT);
+					break;
+				case 7 : 
+					System.out.println("Switching to BS");
+					strategy = "BS";
+					break;
+				}
 			}
 		}
+		this.statistics(p1, dealer);
+
 				
 	}
 }

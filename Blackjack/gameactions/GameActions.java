@@ -141,6 +141,7 @@ public abstract class GameActions {
 	}
 	public void showdown(int pscore, int dscore, Player curr_player, Dealer dealer) {
 			if(pscore > 21) { /*bust*/
+				curr_player.minusBalance(curr_player.getBalance(), curr_player.getPrevious());
 				curr_player.addLose();
 				System.out.println("player loses and his current balance is " + curr_player.getBalance());
 			}
@@ -211,7 +212,7 @@ public abstract class GameActions {
 
 	}
 	
-	public void statisics(Player curr_player, Dealer dealer) {
+	public void statistics(Player curr_player, Dealer dealer) {
 		double averagePBJ = 0;
 		double averageDBJ = 0;
 		double averageWin = 0;
