@@ -290,7 +290,7 @@ public class Game extends GameActions{
 			break;
 		case "HL" : 
 			// Shows player hand
-			p1.showHand(p1.hand);
+			int playerScore = p1.showHand(p1.hand);
 
 			// Shows dealer's hand
 			int aux = dealer.showDealer(dealer.hand, DEAL);
@@ -307,9 +307,12 @@ public class Game extends GameActions{
 			System.out.println("\n\n" + runningCount);
 
 			//HOW TO GET NUMBER OF DECKS REMAINING???
-			int numberOfDecksRemaining = 0;
-			float trueCount = 0;
-			trueCount = runningCount/numberOfDecksRemaining;
+			int numberOfDecksRemaining = 1;
+
+			float trueCount = runningCount/numberOfDecksRemaining;
+
+			int nextMove = Illustrious18ANDFab4(trueCount, playerScore, dealer.hand)
+
 			break;
 		case "HL-AF" :
 			break;

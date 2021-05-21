@@ -262,16 +262,17 @@ public class Player {
 		return auxRunningCount;
 	}
 	
-	public int Illustrious18(){
+	public int Illustrious18ANDFab4(float trueCount, int playerScore, LinkedList<Card> hand){
 	//1 - hit
 	//2 - stand
 	//3 - split
 	//4 - double 
-	//5 - double if possible, else stand
-	//6 - surrender if possible, else
+	//5 - surrender
+	//6 - basic strategy
 		String kak = "16vT";
-		int trueCount = 0;
+
 		switch(kak){
+		//ILUSTRIOUS18
 		case "16vT" :
 			if (trueCount >= 0) return 2;
 			return 1;
@@ -323,9 +324,23 @@ public class Player {
 		case "13v3" :
 			if (trueCount >= -1) return 2;
 			return 1;
+
+		//FAB4
+		case "14vT" :
+			if (trueCount >= 3) return 5;
+			return 6;
+		case "15vT" :
+			if (trueCount >= 0) return 5;
+			return 6;
+		case "15v9" :
+			if (trueCount >= 2) return 5;
+			return 6;
+		case "15vA" :
+			if (trueCount >= 1) return 5;
+			return 6;
 		}
 		return 0;
 	}
-	
+
 	
 }
