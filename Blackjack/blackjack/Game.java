@@ -116,7 +116,7 @@ public class Game extends GameActions{
 					this.setState(INIT);
 					p1.clear_hand();
 					dealer.clear_hand();
-					}
+				}
 				break;
 			//insurance
 			case 'i':
@@ -164,7 +164,7 @@ public class Game extends GameActions{
 		Dealer dealer = new Dealer();
 
 		int numberOfShufflesLeft = s_number;
-		while(numberOfShufflesLeft > 0){
+		while(numberOfShufflesLeft > -100){
 		
 			
 
@@ -222,8 +222,6 @@ public class Game extends GameActions{
 
 					
 
-					break;
-
 				}else if ( (strategy.equals("HL")) || (strategy.equals("HL-AF")) ){ 
 					// Shows player hand
 					playerScore = p1.showHand(p1.hand);
@@ -242,16 +240,12 @@ public class Game extends GameActions{
 					runningCount = runningCount + dealer.assignValueToRankD(dealer.hand);
 					System.out.println("\n\nRunning count" + runningCount);
 
-					//HOW TO GET NUMBER OF DECKS REMAINING???
-					int numberOfDecksRemaining = s_number-1;
-
-					float trueCount = (runningCount/numberOfDecksRemaining);
+					float trueCount = (runningCount/numberOfShufflesLeft);
 
 					nextMove = p1.Illustrious18ANDFab4(trueCount, playerScore, dealer.hand);
 
 					System.out.println("nextMove " + nextMove);
 
-					break;
 				}
 				this.setState(PLAY);
 				switch(nextMove){
@@ -298,6 +292,8 @@ public class Game extends GameActions{
 				case 3 : 
 					System.out.println("Splitting");
 					this.setState(QUIT);
+					p1.clear_hand();
+					dealer.clear_hand();
 					break;	
 				case 4 :
 					Boolean doubleIsPossible1 = this.doublingdown(p1, dealer);
@@ -342,12 +338,18 @@ public class Game extends GameActions{
 					}	
 					break;
 				case 6 :
-					System.out.println("Nonoo");
+					System.out.println("Surrender");
 					this.setState(QUIT);
+					p1.clear_hand();
+						dealer.clear_hand();
 					break;
 				case 7 : 
 					System.out.println("Switching to BS");
-					strategy = "BS";
+						this.setState(QUIT);
+
+					//strategy = "BS";
+					p1.clear_hand();
+						dealer.clear_hand();
 					break;
 				}
 			}

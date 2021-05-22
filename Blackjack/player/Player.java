@@ -144,6 +144,10 @@ public class Player {
 
 	/*Table is 1 for hard, 2 for soft and 3 for pairs*/
 	public int getTable(LinkedList<Card> hand){
+		//return 1 - hard
+		//return 2 - soft
+		//return 3 - pair
+
 		int numberOfAces = 0;
 		int numberOfPairs = 0;
 		String card = "";
@@ -154,18 +158,28 @@ public class Player {
 			card = card + iterator.next();
 		}
 
-		char checkPair = card.charAt(0);
-		
-		for(int i=0; i < card.length(); i++){
-			if(card.charAt(i) == 'A')
-				numberOfAces++;
-			if(card.charAt(i) == checkPair)
-				numberOfPairs++;
-		} 
-		if (numberOfPairs == 2) return 3;
-		if (numberOfAces == 0) return 1;
-		if (numberOfAces == 1) return 2;
-		if (numberOfAces == 2) return 3;
+		try {			
+			char checkPair = card.charAt(0);
+			
+			for(int i=0; i < card.length(); i++){
+				if(card.charAt(i) == 'A')
+					numberOfAces++;
+				if(card.charAt(i) == checkPair)
+					numberOfPairs++;
+			} 
+			if (card.length() == 1){
+				if (numberOfPairs == 2) return 3;
+				if (numberOfAces == 0) return 1;
+				if (numberOfAces == 1) return 2;
+				if (numberOfAces == 2) return 3;
+			}else{
+				if (numberOfAces == 0) return 1;
+				//TO_DO - COUNT THE VALUE OF ACES(1 OR 11)
+				return 2;
+			}
+		}catch(StringIndexOutOfBoundsException e) {
+				char checkPair = '\0';
+		}
 		return 0;
 	}
 
@@ -212,7 +226,7 @@ public class Player {
 	}
 	public int basicStrategy(int dealerScore, int table){
 		int playerScore = handscore();
-		int nextMove = 0;
+		int nextMove = 100;
 
 		if (table == 1){
 			nextMove = BShard(playerScore, dealerScore);

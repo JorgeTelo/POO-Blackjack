@@ -87,9 +87,6 @@ public class Dealer {
 				total += Card.cardvalue(hand.get(i));
 			}
 			
-			if(hand.size() == 2 && total == 21) {
-				
-			}
 			
 			System.out.println(cards + "(" + total + ")");
 			
