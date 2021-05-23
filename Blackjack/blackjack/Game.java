@@ -20,10 +20,14 @@ public class Game extends GameActions{
 		Dealer dealer = new Dealer();
 		Scanner scan = null; /*reads from terminal*/
 		int player_score = 0;
+		int[] hand_scores = {0,0,0,0}; /*to save hand scores for splits*/
 		int dealer_score = 0;
 		Boolean insured = false;
+		Boolean splitable = false;
 		int justdealt = 0;
 		int amount = 0;
+		int splits = 0;
+		int currentHand = 0;
 		
 		/*game is initiated so state goes to INIT*/
 		this.state = INIT;
@@ -95,19 +99,32 @@ public class Game extends GameActions{
 			case 'h':
 				justdealt = 0;
 				player_score = this.hitting(p1, GameDeck);
-				if(player_score > 21) {
-					this.setState(DEAL);
-					if(player_score < 22) {
-					dealer_score = this.standing(dealer, p1, player_score);
-					}else {
-						dealer_score = dealer.showDealer(dealer.hand, DEAL);
+				//if(this.getCurrent() == 0) {
+					if(player_score >= 21) {
+						this.setState(DEAL);
+						if(dealer_score < 22) {
+						dealer_score = this.standing(dealer, p1, player_score);
+						}else {
+							dealer_score = dealer.showDealer(dealer.hand, DEAL);
+						}
+						this.setState(SHOWDOWN);
+						this.showdown(player_score, dealer_score, p1, dealer, insured);
+						this.setState(INIT);
+						p1.clear_hand();
+						dealer.clear_hand();
 					}
-					this.setState(SHOWDOWN);
-					this.showdown(player_score, dealer_score, p1, dealer, insured);
-					this.setState(INIT);
-					p1.clear_hand();
-					dealer.clear_hand();
-				}
+				
+				//}else if(this.getCurrent()>0 && this.getCurrent()<splits+2){					
+					//if(player_score >= 21) {
+						//hand_scores[this.getCurrent()-2] = player_score;
+						//player_score = 0;
+						//System.out.println("scoreboard  hand 1:" + hand_scores[0]+ "  hand 2:" + hand_scores[1]);
+					//}
+					
+					
+				
+				
+				//System.out.println("scoreboard  hand 1:" + hand_scores[0]+ "  hand 2:" + hand_scores[1]);
 				//System.out.println("Hitting");
 				break;
 			//stand
@@ -147,7 +164,20 @@ public class Game extends GameActions{
 				break;
 			//splitting
 			case 'p':
-				System.out.println("Splitting");
+				splitable = p1.splitAble(p1.hand);
+				
+				if(splitable) {
+					splits++;
+					System.out.println("player is splitting " + splits);
+					this.splitting(splits, p1, p1.hand);
+					p1.Add_cardtohand(GameDeck);
+					p1.showHand(p1.hand);					
+				}else {
+					this.illegalCommand('p');
+				}
+				//System.out.println("player is splitting");
+				
+
 				break;
 			//double
 			case '2':

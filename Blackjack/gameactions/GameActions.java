@@ -4,6 +4,7 @@ import cards.*;
 
 import player.*;
 import java.text.*;
+import java.util.LinkedList;
 
 
 public abstract class GameActions {
@@ -24,10 +25,15 @@ public abstract class GameActions {
 	
 	private int handsPlayer; /*numbers of hands obtained by the player*/
 	private int handsDealer; /*numbers of hands obtained by the dealer*/
+	protected int currentHand;
 	/*
 	 * Deck currently being used
 	 */
 	protected Deck GameDeck;
+	LinkedList<Card> splitHand1 = new LinkedList<Card>();
+	LinkedList<Card> splitHand2 = new LinkedList<Card>();
+	LinkedList<Card> splitHand3 = new LinkedList<Card>();
+	LinkedList<Card> splitHand4 = new LinkedList<Card>();
 	
 	/*
 	 * Methods to get information in case it's needed
@@ -56,6 +62,9 @@ public abstract class GameActions {
 		this.handsDealer++;
 	}
 	
+	public int getCurrent() {
+		return this.currentHand;
+	}
 	protected void toquit(Player curr_player) {
 			System.out.println("Exiting Blackjack Simulator. See you next time!");
 			System.exit(0);
@@ -111,9 +120,10 @@ public abstract class GameActions {
 		}else {
 			this.illegalCommand('h');
 		}
+		
 		if (score > 21) {
-			System.out.println("player busts");
-			this.setState(STAND);
+				System.out.println("player busts");
+				this.setState(STAND);	
 		}
 		return score;
 	}
@@ -127,6 +137,7 @@ public abstract class GameActions {
 				pbj = 1;
 				this.setState(SHOWDOWN);
 			}else if(score > 21) {
+				if(currentHand == 0)
 				System.out.println("dealer busts");
 				this.setState(SHOWDOWN);
 			}
@@ -326,6 +337,67 @@ public abstract class GameActions {
 				
 	}
 	
+	public void splitting(int splits, Player curr_player, LinkedList<Card> hand) {
+		
+		int currentHand = 0;
+		
+		if(splits > 3) {
+			this.illegalCommand('p');
+			return;
+		
+		}
+		
+		if(splits == 1) {
+			splitHand1 = (LinkedList<Card>) hand.clone();
+			splitHand1.removeFirst();
+			hand.removeLast();
+		
+			curr_player.multipleHands[0].add(hand.get(0));
+			curr_player.multipleHands[1].add(splitHand1.get(0));
+		
+			for(int i = 0; i<4; i++) {
+			System.out.println(curr_player.multipleHands[i]);
+
+			}
+			this.currentHand = 1;
+			System.out.println("hand 1");
+		}
+		/*if(splits == 2) {
+			splitHand1 = (LinkedList<Card>) hand.clone();
+			splitHand1.removeFirst();
+			hand.removeLast();
+			
+			curr_player.multipleHands[0].add(hand.get(0));
+			curr_player.multipleHands[2].add(splitHand1.get(0));
+		
+			for(int i = 0; i<4; i++) {
+			System.out.println(curr_player.multipleHands[i]);
+
+			}
+			this.currentHand = 1;
+			System.out.println("hand 1");
+		}
+		if(splits == 3) {
+			splitHand1 = (LinkedList<Card>) hand.clone();
+			splitHand1.removeFirst();
+			hand.removeLast();
+		
+			curr_player.multipleHands[0].add(hand.get(0));
+			curr_player.multipleHands[3].add(splitHand1.get(0));
+		
+			for(int i = 0; i<4; i++) {
+			System.out.println(curr_player.multipleHands[i]);
+
+			}
+			this.currentHand = 1;
+			System.out.println("hand 1");
+		}*/
+			
+		return;
+		
+
+		
+	}
 	
 	protected void illegalCommand(char cmd) {
 		System.out.println(cmd + ": illegal command");

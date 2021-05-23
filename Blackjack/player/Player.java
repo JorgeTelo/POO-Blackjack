@@ -1,9 +1,11 @@
 package player;
 
 import java.util.*;
+import blackjack.*;
 
 import cards.Card;
 import cards.Deck;
+import gameactions.GameActions;
 
 public class Player {
 	/* Fields */
@@ -26,6 +28,8 @@ public class Player {
 	 * Linkedlist that saves the players hand, easier to do methods after
 	 */
 	public LinkedList<Card> hand = new LinkedList<Card>();
+	@SuppressWarnings("unchecked")
+	public LinkedList<Card>[] multipleHands = new LinkedList[4];
 	
 	/*Constructors*/
 	/*to use when initializing the new player*/
@@ -34,6 +38,10 @@ public class Player {
 		this.curr_balance  = b;
 		this.initial_balance = b;
 		this.previousBet = min;
+		
+		for(int i = 0; i<4;i++) {
+			multipleHands[i] = new LinkedList<Card>();
+		}
 		/*
 		 * Starting with 2 cards on hand
 		 */
@@ -129,7 +137,11 @@ public class Player {
 	}
 	
 	public int showHand(LinkedList<Card> hand) {
-		System.out.print("player's hand ");
+		//if(currentHand == 0) {
+			System.out.print("player's hand ");
+		//}else if(currentHand > 0) {
+			//System.out.print("player's hand [" + currentHand + "] ");
+		//}
 		String cards = "";
 		int total = 0;
 		int hasace = 0;
@@ -159,6 +171,31 @@ public class Player {
 		System.out.println(cards + "(" + total + ")");
 		return total;
 	}
+	
+	public Boolean splitAble(LinkedList<Card> hand){
+		Boolean splitAble = false;
+		int total = 0;
+		
+		for(int i=0; i<hand.size();i++) {
+			total += Card.cardvalue(hand.get(i));
+		}
+		
+		if(hand.size() == 2 && Card.cardvalue(hand.get(0)) == Card.cardvalue(hand.get(1))) {
+			splitAble = true;
+		}else {
+			splitAble = false;
+		}
+				
+		return splitAble;
+	}
+	
+	public void swapHands(int next) {
+		this.hand.clear();
+		for(int i=0;i<this.multipleHands[next].size();i++) {
+			this.hand.add(this.multipleHands[next].get(i));
+		}
+	}
+	
 
 
 	/*Table is 1 for hard, 2 for soft and 3 for pairs*/
