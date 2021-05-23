@@ -13,22 +13,26 @@ public abstract class GameActions {
 	/*Game States
 	 * Used to prevent illegal actions
 	 */
-	protected final static int INIT = 0; /*start of the game*/
-	protected final static int BET = 1; /*bets are placed*/
-	protected final static int PLAY = 2; /*player turn*/
-	protected final static int STAND = 3; /*player stands or busts*/
-	protected final static int DEAL = 4; /*dealer turn*/
-	protected final static int SHOWDOWN = 5; /*game goes into showdown*/
-	protected final static int SIMULATION = 6; /*only for simulation mode*/
-	protected final static int QUIT = 7; /*player quits*/
-	protected int state = INIT; /*first state is 0*/
+	
+	protected final static int INIT = 0; /**tart of the game*/
+	protected final static int BET = 1; /**bets are placed*/
+	protected final static int PLAY = 2; /**player turn*/
+	protected final static int STAND = 3; /**player stands or busts*/
+	protected final static int DEAL = 4; /**dealer turn*/
+	protected final static int SHOWDOWN = 5; /**game goes into showdown*/
+	protected final static int SIMULATION = 6; /**only for simulation mode*/
+	protected final static int QUIT = 7; /**player quits*/
+	protected int state = INIT; /**first state is 0*/
 	
 	private int handsPlayer; /*numbers of hands obtained by the player*/
 	private int handsDealer; /*numbers of hands obtained by the dealer*/
+	/** player's current hand, in case of split*/
 	protected int currentHand;
 	/*
 	 * Deck currently being used
 	 */
+	
+	/**Game Deck*/
 	protected Deck GameDeck;
 	LinkedList<Card> splitHand1 = new LinkedList<Card>();
 	LinkedList<Card> splitHand2 = new LinkedList<Card>();
@@ -38,38 +42,79 @@ public abstract class GameActions {
 	/*
 	 * Methods to get information in case it's needed
 	 */
+	/**
+	 * Get Deck
+	 * @return The current state of the Deck
+	 */
 	public Deck getDeck() {
 		return GameDeck;
 	}
 	
+	/**
+	 * Get Game State
+	 * @return current state
+	 */
 	public int getState() {
 		return state;
 	}
 	
+	/**
+	 * Set Game State
+	 * @param new_state state to go to
+	 */
 	public void setState(int new_state) {
 		this.state = new_state;
 	}
 	
+	/**
+	 * Deck Shuffle
+	 * @param shoe number of shoes
+	 * 
+	 * Method to re-shuffle GameDeck when shuffle % is reached
+	 */
 	public void shuffle(int shoe) {
 		this.GameDeck = new Deck(shoe);
 	}
 	
+	/**
+	 * Increase amount of hands played by the player, to use for statistics
+	 */
 	public void addPlayerHand() {
 		this.handsPlayer++;
 	}
 	
+	/**
+	 * Increase amount of hands played by the dealer, to use for statistics
+	 */
 	public void addDealerHand() {
 		this.handsDealer++;
 	}
 	
+	/**
+	 * Gets Player Current hand
+	 * @return current hand being played
+	 * Used when splitting
+	 */
 	public int getCurrent() {
 		return this.currentHand;
 	}
+	
+	/**
+	 * TO Quit
+	 * @param curr_player current player that is quitting
+	 * 
+	 * Closes the game, exiting completely, have to rerun the command to play again
+	 */
 	protected void toquit(Player curr_player) {
 			System.out.println("Exiting Blackjack Simulator. See you next time!");
 			System.exit(0);
 	}
 	
+	/**
+	 * Betting Method
+	 * @param curr_player Player that made the bet
+	 * @param amount Amount being used for bet
+	 */
 	public void betting(Player curr_player, int amount) {
 		if(this.getState() == INIT) {
 			curr_player.updatePrevious(amount);
@@ -78,8 +123,17 @@ public abstract class GameActions {
 		}else {
 			System.out.println("player is betting " + curr_player.getPrevious());
 		}
+		
+		System.out.println("");
 	}
 	
+	/**
+	 * Dealing Method
+	 * @param curr_dealer Dealer
+	 * @param curr_player Player
+	 * @param GameDeck Current Deck
+	 * @return player's hand score
+	 */
 	public int dealing(Dealer curr_dealer, Player curr_player, Deck GameDeck) {
 		int score = 0;
 		if(this.getState() == BET) {
@@ -100,6 +154,7 @@ public abstract class GameActions {
 		}else {
 			this.illegalCommand('d');
 		}
+		System.out.println("");
 		return score;
 	}
 	
@@ -108,7 +163,12 @@ public abstract class GameActions {
 	 */
 	
 
-	
+	/**
+	 * Hitting Method
+	 * @param curr_player player that is hitting
+	 * @param GameDeck Current Game Deck
+	 * @return player's hand score
+	 */
 	public int hitting(Player curr_player, Deck GameDeck) {
 		int score = 0;
 		if(this.getState() == PLAY) {
@@ -119,6 +179,7 @@ public abstract class GameActions {
 			
 		}else {
 			this.illegalCommand('h');
+			System.out.println("");
 		}
 		
 		if (score > 21) {
@@ -128,6 +189,13 @@ public abstract class GameActions {
 		return score;
 	}
 	
+	/**
+	 * Standing method
+	 * @param dealer Dealer 
+	 * @param curr_player Player
+	 * @param pscore player's hand score
+	 * @return player's score
+	 */
 	public int standing(Dealer dealer, Player curr_player, int pscore) {
 		int score = 0;
 		int pbj = 0;
@@ -151,6 +219,15 @@ public abstract class GameActions {
 		}
 		return score;
 	}
+	
+	/**
+	 * Showdown Method
+	 * @param pscore player's total score at the end of the turn
+	 * @param dscore dealer's total score at the end of the turn
+	 * @param curr_player Player object
+	 * @param dealer Dealer
+	 * @param insured if player has insured or not
+	 */
 	public void showdown(int pscore, int dscore, Player curr_player, Dealer dealer, Boolean insured) {
 		if(insured == false) {	
 			if(pscore > 21) { /*bust*/
@@ -232,20 +309,37 @@ public abstract class GameActions {
 				System.out.println("player loses and his current balance is " + curr_player.getBalance());
 			}
 		}
+		System.out.println("");
 	}
 	
-	public Boolean insurance(int justdealt, Player curr_player, Dealer dealer, int amount) {
+	/**
+	 * Insurance method
+	 * @param justdealt flag to see if a deal was just made
+	 * @param curr_player Player Object
+	 * @param dealer Dealer object
+	 * @param amount 
+	 * @return
+	 */
+	public Boolean insurance(int justdealt, Player curr_player, Dealer dealer) {
 		if(justdealt == 1 && Card.cardRank(dealer.hand.getFirst()) == 1) {
 			curr_player.minusBalance(curr_player.getBalance(), curr_player.getPrevious());
+			System.out.println("");
 			return true;
 		}else {
 			this.illegalCommand('i');
 		}
-		
+		System.out.println("");
 		return false;
 		
 	}
 	
+	/**
+	 * Surrender method
+	 * @param justdealt if hand was just dealt
+	 * @param curr_player Player Object
+	 * @param dealer Dealer Object
+	 * @param insured insured flag
+	 */
 	public void surrender(int justdealt, Player curr_player, Dealer dealer, Boolean insured) {
 		if(justdealt == 1 || justdealt == 2) {
 			System.out.println("player is surrendering");
@@ -263,8 +357,16 @@ public abstract class GameActions {
 			dealer.clear_hand();
 			}else {
 			this.illegalCommand('u');
-		}	
+		}
+		System.out.println("");
 	}
+	
+	/**
+	 * Doubling Down Method
+	 * @param curr_player Player Object
+	 * @param dealer Dealer Object
+	 * @return returns flag Aux for simulation
+	 */
 	public Boolean doublingdown(Player curr_player, Dealer dealer) {
 		//return true if doublingdown is possible, False otherwise
 		int player_score = 0;
@@ -296,16 +398,22 @@ public abstract class GameActions {
 			dealer.clear_hand();
 
 			curr_player.updatePrevious(curr_player.getPrevious()/2);
-
+			System.out.println("");
 			return true;
+			
 			
 		}
 		curr_player.updatePrevious(curr_player.getPrevious()/2);
+		System.out.println("");
 		return false;
 		
 
 	}
-	
+	/**
+	 * Statistics 
+	 * @param curr_player Player Object
+	 * @param dealer Dealer Object
+	 */
 	public void statistics(Player curr_player, Dealer dealer) {
 		double averagePBJ = 0;
 		double averageDBJ = 0;
@@ -333,10 +441,17 @@ public abstract class GameActions {
 		System.out.println("Lose		" + nf.format(averageLose));
 		System.out.println("Push		" + nf.format(averagePush));
 		System.out.println("Balance		" + curr_player.getBalance() +"(" + gain +"%)");
+		System.out.println("");
 		
 				
 	}
 	
+	/**
+	 * Splitting Method
+	 * @param splits number of splits avaiable
+	 * @param curr_player Player Object
+	 * @param hand Player hand LinkedList of Card objects
+	 */
 	public void splitting(int splits, Player curr_player, LinkedList<Card> hand) {
 		
 		int currentHand = 0;
@@ -399,6 +514,10 @@ public abstract class GameActions {
 		
 	}
 	
+	/**
+	 * Illegal Command printing Method
+	 * @param cmd char with the cmd given
+	 */
 	protected void illegalCommand(char cmd) {
 		System.out.println(cmd + ": illegal command");
 		return;

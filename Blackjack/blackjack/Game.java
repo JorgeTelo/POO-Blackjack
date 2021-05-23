@@ -1,13 +1,11 @@
 package blackjack;
 
-import cards.*;
-import blackjack.*;
-import main.*;
-import player.*;
-import gameactions.GameActions;
+import java.util.Scanner;
 
-import java.util.*;
-import java.io.*;
+import cards.Deck;
+import gameactions.GameActions;
+import player.Dealer;
+import player.Player;
 
 
 /**This class is the game development class
@@ -166,7 +164,7 @@ public class Game extends GameActions{
 				break;
 			//insurance
 			case 'i':
-				insured = this.insurance(justdealt, p1, dealer, amount);
+				insured = this.insurance(justdealt, p1, dealer);
 				if(insured == true) {
 					justdealt = 2;
 					//System.out.println("player insured, current balance is" + p1.getBalance() );
