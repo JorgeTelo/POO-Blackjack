@@ -1,32 +1,17 @@
+
 package blackjack;
 
-import java.util.Scanner;
-
-import cards.Deck;
+import cards.*;
+import blackjack.*;
+import main.*;
+import player.*;
 import gameactions.GameActions;
-<<<<<<< HEAD
-import gameactions.GameActions;
-=======
-import player.Dealer;
-import player.Player;
 
->>>>>>> 33ced9ceb3ce0b75c34b9d2c4cf23702da0e7d47
-
-/**This class is the game development class
- * which has all the modes on how they run
- */
-
-<<<<<<< HEAD
+import java.util.*;
+import java.io.*;
 
 
-=======
-/**
- * Game Class
- * Contains the important game running algorithms
- * Extends GameActions, which contains the rules and how they influence the game
- *
- */
->>>>>>> 33ced9ceb3ce0b75c34b9d2c4cf23702da0e7d47
+
 public class Game extends GameActions{
 	/**
 	 * Interactive Mode
@@ -51,6 +36,9 @@ public class Game extends GameActions{
 		int splits = 0;
 		int currentHand = 0;
 		
+		int numberOfShufflesLeft = shoe;
+
+		
 		/*game is initiated so state goes to INIT*/
 		this.state = INIT;
 		
@@ -59,6 +47,7 @@ public class Game extends GameActions{
 			
 			if(Deck.deckSize() < shoe*shuffle*52/100 && this.getState()==INIT) {
 				Deck.shuffle();
+				numberOfShufflesLeft--;
 			}
 			
 			scan = new Scanner(System.in);
@@ -216,7 +205,14 @@ public class Game extends GameActions{
 			switch(cmdln) {
 			//advice
 			case "ad":
-				System.out.println("Advising");
+				int nextMoveBS = this.adviceBS(p1,dealer);
+				int nextMoveHL = this.adviceHL(p1, dealer, numberOfShufflesLeft);
+				
+				String basicStrategyMove = p1.convertMoveToString(nextMoveBS);
+				String hiloMove = p1.convertMoveToString(nextMoveHL);
+				
+				System.out.println("basic : \t" + basicStrategyMove);
+				System.out.println("hi-lo : \t" + hiloMove);
 				break;
 			//statistics
 			case "st":

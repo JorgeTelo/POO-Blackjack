@@ -409,6 +409,34 @@ public abstract class GameActions {
 		
 
 	}
+	
+	
+	public int adviceBS(Player curr_player, Dealer dealer) {
+		//For Basic advice
+		int dealerScoreShowing = dealer.dealerHandScore(6);
+		int table = curr_player.getTable(curr_player.hand);
+		int nextMoveBS = curr_player.basicStrategy(dealerScoreShowing, table);
+
+		return nextMoveBS;
+
+	}
+	
+	public int adviceHL(Player curr_player, Dealer dealer, int numberOfShufflesLeft) {
+		// For HI-LO advice	
+		int playerScore = curr_player.showHand(curr_player.hand);
+	
+		int runningCount = 0;
+		runningCount = runningCount + curr_player.assignValueToRank(curr_player.hand);
+		runningCount = runningCount + dealer.assignValueToRankD(dealer.hand);
+	
+		float trueCount = (runningCount/numberOfShufflesLeft);
+	
+		int nextMoveHL = curr_player.Illustrious18ANDFab4(trueCount, playerScore, dealer.hand);
+		
+		return nextMoveHL;
+	}
+	
+	
 	/**
 	 * Statistics 
 	 * @param curr_player Player Object
