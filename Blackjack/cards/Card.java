@@ -125,7 +125,18 @@ public class Card {
 	}
 	
 	public static int cardvalue(Card card) {
-		int value = card.score;
+		int value = 0;
+		value = card.score;
+		
+		
 		return value;
+	}
+	
+	public static int cardRank(Card card) {
+		int rank = 0;
+		rank = card.rank;
+		
+		
+		return rank;
 	}
 }

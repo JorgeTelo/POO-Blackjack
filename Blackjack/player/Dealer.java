@@ -71,6 +71,7 @@ public class Dealer {
 		System.out.print("dealer's hand ");
 		String cards = "";
 		int total = 0;
+		int hasace = 0;
 		
 		if(gameState == PLAY || gameState == SIMULATION) {
 			cards = hand.getFirst() + " X"; /*X is the hole card*/
@@ -85,6 +86,23 @@ public class Dealer {
 			
 			for(int i=0; i<hand.size();i++) {
 				total += Card.cardvalue(hand.get(i));
+			}
+			
+			for(int i=0; i<hand.size();i++) {
+				if(Card.cardRank(hand.get(i))==1){
+					hasace++;
+				}
+			}
+			
+			if(hand.size() == 2 && hasace >=1 && total + 10 >= 17) {
+				total+=10;
+				System.out.println(cards + "(" + total + ")");
+				return total;
+			}
+			else if(hasace >=1 && total + 10 <= 21) {
+				total+=10;
+				System.out.println(cards + "(" + total + ")");
+				return total;
 			}
 			
 			

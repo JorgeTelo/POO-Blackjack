@@ -134,14 +134,10 @@ public abstract class GameActions {
 				dealer.Add_cardtohand(GameDeck);
 			}					
 		}
-		if(dealer.hand.size() == 2 && score == 21) {
-			System.out.println("blackjack!!!");
-		}
 		return score;
 	}
 	public void showdown(int pscore, int dscore, Player curr_player, Dealer dealer) {
 			if(pscore > 21) { /*bust*/
-				curr_player.minusBalance(curr_player.getBalance(), curr_player.getPrevious());
 				curr_player.addLose();
 				System.out.println("player loses and his current balance is " + curr_player.getBalance());
 			}
@@ -149,6 +145,18 @@ public abstract class GameActions {
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2));
 				curr_player.addWin();
 				System.out.println("player wins and his current balance is " + curr_player.getBalance());
+			}else if(pscore == 21 && curr_player.hand.size() == 2) { /*player blackjack*/
+				curr_player.addPBJ();
+				if(dscore != 21) { /*auto win, dealer has no blackjack*/
+					System.out.println("blackjack!!");
+					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2.5));
+					System.out.println("player pushes and his current balance is " + curr_player.getBalance());
+				}else if(dscore == 21 && dealer.hand.size() == 2) { /*dealer has blackjack as well*/
+					dealer.addDBJ();
+					System.out.println("blackjack!!");
+					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
+					System.out.println("player pushes and his current balance is " + curr_player.getBalance());
+				}
 			}else if(pscore > dscore) { /*player has more value on his hand than dealer, without busts*/
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2));
 				curr_player.addWin();
@@ -157,22 +165,12 @@ public abstract class GameActions {
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
 				curr_player.addPush();
 				System.out.println("player pushes and his current balance is " + curr_player.getBalance());
-			}else if(pscore == 21 && curr_player.hand.size() == 2) { /*player blackjack*/
-				curr_player.addPBJ();
-				if(dscore != 21) { /*auto win, dealer has no blackjack*/
-					System.out.println("blackjack!!");
-					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2.5));
-					System.out.println("player pushes and his current balance is " + curr_player.getBalance());
-				}else if(dscore == 21 && dealer.hand.size() == 2) { /*dealer has blackjack as well*/
-					System.out.println("blackjack!!");
-					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
-					System.out.println("player pushes and his current balance is " + curr_player.getBalance());
-				}
 			}else {/*dealer has higher valued hand*/
 				curr_player.addLose();
 				System.out.println("player loses and his current balance is " + curr_player.getBalance());
 			}		
 	}
+	
 	public Boolean doublingdown(Player curr_player, Dealer dealer) {
 		//return true if doublingdown is possible, False otherwise
 		int player_score = 0;
@@ -182,8 +180,9 @@ public abstract class GameActions {
 			curr_player.Add_cardtohand(GameDeck);
 			player_score = curr_player.showHand(curr_player.hand);
 			curr_player.minusBalance(curr_player.getBalance(), curr_player.getPrevious());
+			//System.out.println("player balance is after doubling" + curr_player.getBalance());
 			curr_player.updatePrevious(curr_player.getPrevious()*2);
-			System.out.println("Player new bet is " + curr_player.getPrevious());
+			//System.out.println("Player new bet is " + curr_player.getPrevious());
 			
 			if(player_score > 21) {
 				System.out.println("player busts");
@@ -234,7 +233,7 @@ public abstract class GameActions {
 		averagePush = (double)curr_player.push / (double)this.handsPlayer;
 		gain = curr_player.gain;
 		
-		System.out.println("BJ P/D		" + nf.format(averagePBJ) +"/" + nf.format(averageDBJ));
+		System.out.println("BJ P/D		" + +curr_player.pbj +"  " + nf.format(averagePBJ) +"/" + nf.format(averageDBJ));
 		System.out.println("Win		" + nf.format(averageWin));
 		System.out.println("Lose		" + nf.format(averageLose));
 		System.out.println("Push		" + nf.format(averagePush));

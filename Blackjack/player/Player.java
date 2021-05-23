@@ -92,14 +92,7 @@ public class Player {
 			
 	}
 	
-	public int handscore() {
-		int total = 0;
-		for(int i=0; i<this.hand.size();i++) {
-			total = total + Card.cardvalue(hand.get(i));
-		}
-		return total;
-		
-	}
+
 	
 	public double getBalance() {
 		return this.curr_balance;
@@ -122,10 +115,20 @@ public class Player {
 	 * Need to make a method in Card.java to show cards
 	 */
 	
+	public int handscore() {
+		int total = 0;
+		for(int i=0; i<this.hand.size();i++) {
+			total = total + Card.cardvalue(hand.get(i));
+		}
+		return total;
+		
+	}
+	
 	public int showHand(LinkedList<Card> hand) {
 		System.out.print("player's hand ");
 		String cards = "";
 		int total = 0;
+		int hasace = 0;
 		
 		Iterator<Card> iterator = hand.iterator();
 		
@@ -135,6 +138,18 @@ public class Player {
 		
 		for(int i=0; i<hand.size();i++) {
 			total += Card.cardvalue(hand.get(i));
+		}
+		
+		for(int i=0; i<hand.size();i++) {
+			if(Card.cardRank(hand.get(i))==1){
+				hasace++;
+			}
+		}
+		
+		if(hasace >=1 && total + 10 <= 21) {
+			total+=10;
+			System.out.println(cards + "(" + total + ")");
+			return total;
 		}
 		
 		System.out.println(cards + "(" + total + ")");

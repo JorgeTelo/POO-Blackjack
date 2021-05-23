@@ -134,7 +134,7 @@ public class Game extends GameActions{
 			case '2':
 				//aux is useless here, only used for simulation
 				Boolean aux = this.doublingdown(p1, dealer);
-				System.out.println("Doubling Down");
+				//System.out.println("Doubling Down");
 				break;
 			//player quits
 			case 'q':
