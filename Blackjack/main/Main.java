@@ -57,7 +57,7 @@ public class Main {
 				}
 				
 			shoe = Integer.parseInt(args[4]);
-			if(shoe <4 || shoe > 8) {
+			if(shoe <1 || shoe > 8) {
 				System.out.println("Shoe number must be inbetween 4 and 8, including those numbers");
 				running_commands();
 			}

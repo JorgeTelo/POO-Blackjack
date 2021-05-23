@@ -5,6 +5,7 @@ import java.util.*; /*Imports all funtions of java.util*/
 public class Deck {
 	/*Fields*/
 	public static LinkedList<Card> GameDeck = new LinkedList<Card>();
+	public static LinkedList<Card> DiscardDeck = new LinkedList<Card>();
 	
 	/*Creating Unshuffled Decks for Interactive mode*/
 	public Deck(int shoe) {
@@ -49,6 +50,11 @@ public class Deck {
 		System.out.println("Shuffling the shoe ...");
 		//stem.out.println("Shuffled deck " + GameDeck.get(5));
 	}
+	/**
+	 * Costructor for Discard pile, to be used on new shuffles
+	 */
+	public Deck() {
+	}
 
 
 	//Drawing cards from Deck
@@ -67,10 +73,20 @@ public class Deck {
 	}
 
 
-	public static int deckSize() {
+	public  static int deckSize() {
 		return Deck.GameDeck.size();
-		
 	}
 	 
+
+	
+	public static void shuffle() {
+		for(int i=0; i<Deck.DiscardDeck.size();i++) {
+			Deck.GameDeck.add(Deck.DiscardDeck.get(i));
+		}
+		
+		DiscardDeck.clear();
+		Collections.shuffle(GameDeck);
+		System.out.println("Shuffling the shoe ...");
+	}
 	
 }

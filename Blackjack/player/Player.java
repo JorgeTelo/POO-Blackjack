@@ -84,7 +84,11 @@ public class Player {
 	
 	/*Cleans current hand when players gets bust, surrenders or round is over*/
 	public void clear_hand() {
+		for(int i=0; i<this.hand.size();i++) {
+			Deck.DiscardDeck.add(this.hand.get(i));
+		}
 		this.hand.clear();
+		//System.out.println("Cards added " + Deck.DiscardDeck);
 	}
 	
 	public String playertoString() {

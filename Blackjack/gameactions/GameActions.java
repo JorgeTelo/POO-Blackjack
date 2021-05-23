@@ -250,7 +250,7 @@ public abstract class GameActions {
 			this.setState(INIT);
 			curr_player.clear_hand();
 			dealer.clear_hand();
-		}else {
+			}else {
 			this.illegalCommand('u');
 		}	
 	}
@@ -280,6 +280,7 @@ public abstract class GameActions {
 			this.setState(SHOWDOWN);
 			this.showdown(player_score, dealer_score, curr_player, dealer, false);
 			this.setState(INIT);
+			
 			curr_player.clear_hand();
 			dealer.clear_hand();
 

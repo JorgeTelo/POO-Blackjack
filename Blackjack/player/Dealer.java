@@ -45,7 +45,12 @@ public class Dealer {
 	
 	/*Cleans current hand when dealer gets bust or round is over*/
 	public void clear_hand() {
+		for(int i=0; i<this.hand.size();i++) {
+			Deck.DiscardDeck.add(this.hand.get(i));
+		}
+		
 		this.hand.clear();
+		//System.out.println("Cards added " + Deck.DiscardDeck);
 	}
 		
 	public int dealerHandScore(int gameState) {

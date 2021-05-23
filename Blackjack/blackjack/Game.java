@@ -30,6 +30,11 @@ public class Game extends GameActions{
 		
 		/*while the state doesn't go into quit, which means player doesn't quit, keep going*/
 		while(state != QUIT) {
+			
+			if(Deck.deckSize() < shoe*shuffle*52/100 && this.getState()==INIT) {
+				Deck.shuffle();
+			}
+			
 			scan = new Scanner(System.in);
 			String cmdln = scan.nextLine();
 			char cmd;
