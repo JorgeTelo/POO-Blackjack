@@ -5,10 +5,12 @@ import blackjack.*;
 import main.*;
 import player.*;
 import gameactions.GameActions;
-import gameactions.GameActions.adviceReturn;
+import gameactions.GameActions;
 
 import java.util.*;
 import java.io.*;
+
+
 
 public class Game extends GameActions{
 		/*This class is the game development class
@@ -217,6 +219,34 @@ public class Game extends GameActions{
 			}
 		}
 	}
+	
+	public void debug(int min_bet, int max_bet, int init_balance, String shoe_file, String cmd_file) {
+		//Deck GameDeck = new Deck(shoe);
+
+		Player p1 = new Player(init_balance, min_bet, GameDeck);/*starting shuffled deck*/
+		
+		Dealer dealer = new Dealer();
+		
+		Boolean insured = false;
+		
+		char[] debugMoves;
+		
+		File file = new File("C:\\Users\\pedro\\Desktop\\VASCO\\POO-Blackjack\\Blackjack\\cmd-file.txt"); 
+		  
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(file)); 
+			  
+			String string; 
+		 
+			while ((string = br.readLine()) != null) 
+				debugMoves[]
+				System.out.println(string); 
+		  
+		} catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
+
 
 	public void simulation(int min_bet, int max_bet, int init_balance, int shoe, int shuffle, int s_number, String strategy) {
 		Deck GameDeck = new Deck(shoe);

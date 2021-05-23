@@ -1,0 +1,3 @@
+INDEX VERSION 1.131+C:\Users\pedro\Desktop\VASCO\POO-Blackjack\.metadata\.plugins\org.eclipse.jdt.core
+1332139719.index
+2805084173.index

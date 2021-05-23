@@ -72,9 +72,9 @@ public class Main {
 		}
 		//Debug Mode
 		else if(args[0].equals("-d")) {
-			if(args.length != 5)
-				running_commands();
-			
+			if(args.length != 6) {
+					running_commands();
+			}
 			min_bet = Integer.parseInt(args[1]);
 			if(min_bet<1) {
 				System.out.println("Minimum bet must be above 1$");
@@ -94,6 +94,9 @@ public class Main {
 			
 			shoe_file = args[4];
 			cmf_file = args[5];
+			blackjack.debug(min_bet, max_bet, balance, shoe_file, cmf_file);
+			
+
 		}
 		//Simulation Mode
 		else if(args[0].equals("-s")) {
@@ -146,7 +149,7 @@ public class Main {
 		System.out.println("Welcome to BlackJack Simulator 2021");
 		System.out.println("Please use these commands to choose your game mode and entry parameters");
 		System.out.println("INTERACTIVE MODE: java -jar <<YOUR-JAR-NAME>>.jar -i min-bet max-bet balance shoe shuffle");
-		System.out.println("DEBUG       MODE: java -jar <<YOUR-JAR-NAME>>.jar -d min-bet max-bet shoe-file cmd-file");
+		System.out.println("DEBUG       MODE: java -jar <<YOUR-JAR-NAME>>.jar -d min-bet max-bet balance shoe-file cmd-file");
 		System.out.println("SIMULATION  MODE: java -jar <<YOUR-JAR-NAME>>.jar -s min-bet max-bet balance shoe shuffle s-number strategy");
 		System.exit(1);
 	}
