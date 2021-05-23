@@ -3,8 +3,18 @@ package main;
 import player.*;
 import blackjack.*;
 import cards.*;
+/**
+ * Math in Blackjack
+ * POO 2nd Semester 2020/2021
+ * @author Jorge Miguel Costa Telo Nº78609
+ * @author Ana Isabel Ventura Teixeira 83997
+ * @author Vasco Faden da Silva de Vasconcelos Araújo 90817
+ */
 
 
+/**
+ * The Main Class of the project
+ */
 public class Main {
 	public static int min_bet;
 	public static int max_bet;
@@ -25,7 +35,10 @@ public class Main {
 	public static Player p8;
 
 	
-
+	/**
+	 * Main method
+	 * @param args saves the command line parameters that were introduced
+	 */
 	public static void main(String[] args) {
 		/*Switch case to chose what mode to start*/
 		if(args.length <5) {
@@ -141,7 +154,9 @@ public class Main {
 		
 	}
 	
-	/*Instructions for use*/
+	/**
+	 * Instructions for correct use
+	 * */
 	public static void running_commands(){
 		System.out.println("Welcome to BlackJack Simulator 2021");
 		System.out.println("Please use these commands to choose your game mode and entry parameters");

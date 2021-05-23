@@ -9,11 +9,26 @@ import gameactions.GameActions;
 import java.util.*;
 import java.io.*;
 
+
+/**This class is the game development class
+ * which has all the modes on how they run
+ */
+
+/**
+ * Game Class
+ * Contains the important game running algorithms
+ * Extends GameActions, which contains the rules and how they influence the game
+ *
+ */
 public class Game extends GameActions{
-		/*This class is the game development class
-		 * which has all the modes on how they run
-		 */
-	
+	/**
+	 * Interactive Mode
+	 * @param min_bet minimum bet 
+	 * @param max_bet maximum allowed bet
+	 * @param init_balance initial player Balance
+	 * @param shoe number of shoe
+	 * @param shuffle shuffle % 
+	 */
 	public void interactive(int min_bet, int max_bet, int init_balance, int shoe, int shuffle) {
 		Deck GameDeck = new Deck(shoe);
 		Player p1 = new Player(init_balance, min_bet, GameDeck);/*starting shuffled deck*/
@@ -167,11 +182,11 @@ public class Game extends GameActions{
 				splitable = p1.splitAble(p1.hand);
 				
 				if(splitable) {
-					splits++;
+					/*splits++;
 					System.out.println("player is splitting " + splits);
 					this.splitting(splits, p1, p1.hand);
 					p1.Add_cardtohand(GameDeck);
-					p1.showHand(p1.hand);					
+					p1.showHand(p1.hand);*/					
 				}else {
 					this.illegalCommand('p');
 				}
@@ -205,6 +220,16 @@ public class Game extends GameActions{
 		}
 	}
 
+	/**
+	 * Simulation mode
+	 * @param min_bet minimum bet
+	 * @param max_bet maximum bet allowed
+	 * @param init_balance initial balance
+	 * @param shoe number of shoes
+	 * @param shuffle shuffle %
+	 * @param s_number number of shuffles until finish
+	 * @param strategy strategy to use
+	 */
 	public void simulation(int min_bet, int max_bet, int init_balance, int shoe, int shuffle, int s_number, String strategy) {
 		Deck GameDeck = new Deck(shoe);
 
@@ -409,5 +434,10 @@ public class Game extends GameActions{
 
 				
 	}
+	/**
+	 * Debug mode
+	 */
+	
+	
 }
 
