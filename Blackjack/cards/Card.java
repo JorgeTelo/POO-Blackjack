@@ -1,5 +1,9 @@
 package cards;
 
+/**
+ * This class is used to represent all the Cards that will be used
+ * Presents methods required for Card object management
+ */
 public class Card {
 	/*Fields*/
 	public int score;
@@ -31,7 +35,12 @@ public class Card {
 	private final static int D = 3;
 	private final static int C = 4;
 	
-	/*Constructor*/
+	/**
+	 * Constructor
+	 * @param score face value of the card, used for scoring methods
+	 * @param suit suit of the card, used for representations
+	 * @param rank used to differentiate between cards of same score
+	 */
 
 	Card(int score, int suit, int rank){
 		this.score = score;
@@ -40,6 +49,11 @@ public class Card {
 	}
 	
 	/*Methods required to print the ints into readable format and strings to ints from files*/
+	/**
+	 * Rank to String
+	 * @param rank rank of the card being evaluated
+	 * @return String containing value of rank, to be used for printing purposes
+	 */
 	private String RanktoString(int rank) {
 		if(rank == J)
 			return "J";
@@ -52,6 +66,12 @@ public class Card {
 		else
 			return String.valueOf(rank);
 	}
+	
+	/**
+	 * String to Rank
+	 * @param rank rank of the card being evaluated, as a char
+	 * @return value of the rank of the card evaluated
+	 */
 	public static int StringtoRank(char rank) {
 		if(rank == 'J')
 			return J;
@@ -65,6 +85,11 @@ public class Card {
 			return Character.getNumericValue(rank);
 	}
 	
+	/**
+	 * Suit to String
+	 * @param suit suit of the card being evaluated
+	 * @return suit value as a String for printing purposes
+	 */
 	private String SuittoString(int suit) {
 		if(suit == S)
 			return "S";
@@ -77,6 +102,12 @@ public class Card {
 		
 		return String.valueOf(suit);
 	}
+	
+	/**
+	 * String to Suit
+	 * @param suit suit of the card being evaluated, as a char
+	 * @return value of the Suit for method utilization
+	 */
 	public static int StringtoSuit(char suit) {
 		if(suit == 'S')
 			return S;
@@ -89,6 +120,11 @@ public class Card {
 		return Character.getNumericValue(suit);
 	}
 	
+	/**
+	 * Score to String
+	 * @param score face value of the card evaluated
+	 * @return score as a String for presentation purposes
+	 */
 	private String ScoretoString(int score) {
 		if(score == 1)
 			return "1";
@@ -116,6 +152,7 @@ public class Card {
 		return String.valueOf(score);
 	}
 	
+	
 	/*toString method for printing*/
 	public String toString() {
 		String rank = RanktoString(this.rank);
@@ -124,6 +161,11 @@ public class Card {
 		return rank+suit;
 	}
 	
+	/**
+	 * Card Value: Method to return the face value of a card
+	 * @param card card object that is being evaluated
+	 * @return score parameter of object Card
+	 */
 	public static int cardvalue(Card card) {
 		int value = 0;
 		value = card.score;
@@ -132,6 +174,11 @@ public class Card {
 		return value;
 	}
 	
+	/**
+	 * Card Rank: Method to return the rank of a card
+	 * @param card card object that is being evaluated
+	 * @return rank parameter of object Card
+	 */
 	public static int cardRank(Card card) {
 		int rank = 0;
 		rank = card.rank;

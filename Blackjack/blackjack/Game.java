@@ -1,22 +1,41 @@
 package blackjack;
 
-import cards.*;
-import blackjack.*;
-import main.*;
-import player.*;
+import java.util.Scanner;
+
+import cards.Deck;
 import gameactions.GameActions;
+<<<<<<< HEAD
 import gameactions.GameActions;
+=======
+import player.Dealer;
+import player.Player;
 
-import java.util.*;
-import java.io.*;
+>>>>>>> 33ced9ceb3ce0b75c34b9d2c4cf23702da0e7d47
+
+/**This class is the game development class
+ * which has all the modes on how they run
+ */
+
+<<<<<<< HEAD
 
 
-
+=======
+/**
+ * Game Class
+ * Contains the important game running algorithms
+ * Extends GameActions, which contains the rules and how they influence the game
+ *
+ */
+>>>>>>> 33ced9ceb3ce0b75c34b9d2c4cf23702da0e7d47
 public class Game extends GameActions{
-		/*This class is the game development class
-		 * which has all the modes on how they run
-		 */
-	
+	/**
+	 * Interactive Mode
+	 * @param min_bet minimum bet 
+	 * @param max_bet maximum allowed bet
+	 * @param init_balance initial player Balance
+	 * @param shoe number of shoe
+	 * @param shuffle shuffle % 
+	 */
 	public void interactive(int min_bet, int max_bet, int init_balance, int shoe, int shuffle) {
 		Deck GameDeck = new Deck(shoe);
 		Player p1 = new Player(init_balance, min_bet, GameDeck);/*starting shuffled deck*/
@@ -31,8 +50,6 @@ public class Game extends GameActions{
 		int amount = 0;
 		int splits = 0;
 		int currentHand = 0;
-		
-		int numberOfShufflesLeft = shoe;
 		
 		/*game is initiated so state goes to INIT*/
 		this.state = INIT;
@@ -115,7 +132,6 @@ public class Game extends GameActions{
 						this.setState(SHOWDOWN);
 						this.showdown(player_score, dealer_score, p1, dealer, insured);
 						this.setState(INIT);
-						numberOfShufflesLeft--;
 						p1.clear_hand();
 						dealer.clear_hand();
 					}
@@ -147,7 +163,6 @@ public class Game extends GameActions{
 						this.setState(SHOWDOWN);
 						this.showdown(player_score, dealer_score, p1, dealer, insured);
 						this.setState(INIT);
-						numberOfShufflesLeft--;
 						p1.clear_hand();
 						dealer.clear_hand();
 					}
@@ -158,7 +173,7 @@ public class Game extends GameActions{
 				break;
 			//insurance
 			case 'i':
-				insured = this.insurance(justdealt, p1, dealer, amount);
+				insured = this.insurance(justdealt, p1, dealer);
 				if(insured == true) {
 					justdealt = 2;
 					//System.out.println("player insured, current balance is" + p1.getBalance() );
@@ -174,11 +189,11 @@ public class Game extends GameActions{
 				splitable = p1.splitAble(p1.hand);
 				
 				if(splitable) {
-					splits++;
+					/*splits++;
 					System.out.println("player is splitting " + splits);
 					this.splitting(splits, p1, p1.hand);
 					p1.Add_cardtohand(GameDeck);
-					p1.showHand(p1.hand);					
+					p1.showHand(p1.hand);*/					
 				}else {
 					this.illegalCommand('p');
 				}
@@ -201,15 +216,7 @@ public class Game extends GameActions{
 			switch(cmdln) {
 			//advice
 			case "ad":
-
-				int nextMoveBS = this.adviceBS(p1,dealer);
-				int nextMoveHL = this.adviceHL(p1, dealer, numberOfShufflesLeft);
-				
-				String basicStrategyMove = p1.convertMoveToString(nextMoveBS);
-				String hiloMove = p1.convertMoveToString(nextMoveHL);
-				
-				System.out.println("basic : \t" + basicStrategyMove);
-				System.out.println("hi-lo : \t" + hiloMove);
+				System.out.println("Advising");
 				break;
 			//statistics
 			case "st":
@@ -248,6 +255,16 @@ public class Game extends GameActions{
 	}
 
 
+	/**
+	 * Simulation mode
+	 * @param min_bet minimum bet
+	 * @param max_bet maximum bet allowed
+	 * @param init_balance initial balance
+	 * @param shoe number of shoes
+	 * @param shuffle shuffle %
+	 * @param s_number number of shuffles until finish
+	 * @param strategy strategy to use
+	 */
 	public void simulation(int min_bet, int max_bet, int init_balance, int shoe, int shuffle, int s_number, String strategy) {
 		Deck GameDeck = new Deck(shoe);
 
@@ -452,5 +469,10 @@ public class Game extends GameActions{
 
 				
 	}
+	/**
+	 * Debug mode
+	 */
+	
+	
 }
 

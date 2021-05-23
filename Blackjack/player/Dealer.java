@@ -8,6 +8,12 @@ import cards.Deck;
 import gameactions.*;
 import blackjack.*;
 
+
+/**
+ * Dealer Class
+ * Contains methods related to Dealer usage
+ *
+ */
 public class Dealer {
 	/* Fields */
 	protected final static int INIT = 0; /*start of the game*/
@@ -23,8 +29,9 @@ public class Dealer {
 
 	public LinkedList<Card> hand = new LinkedList<Card>();
 	
-	/*Constructors*/
-	/*to use when initializing the new player*/
+	/**
+	 * Constructor
+	*to use when initializing the new Dealer*/
 	public Dealer(){
 		/*
 		 * Empty constructor, since we add cards to the dealer when dealing
@@ -32,11 +39,20 @@ public class Dealer {
 	}
 	
 	/*Methods*/
-
+	/**
+	 *Add DBJ
+	 *increments the dbj parameter, which saves the amount of blackjacks the dealer has received 
+	 */
 	public void addDBJ() {
 		this.dbj++;
 	}
+	
 	/*Adds new card to current hand*/
+	/**
+	 * Add Card to Dealer Hand
+	 * Adds a new drawn card to Dealer Hand
+	 * @param GameDeck current gamedeck that is being used
+	 */
 	public void Add_cardtohand(Deck GameDeck) {
 		Card entry = Deck.draw();
 		this.hand.add(entry);
@@ -44,6 +60,10 @@ public class Dealer {
 	}
 	
 	/*Cleans current hand when dealer gets bust or round is over*/
+	/**
+	 * Clear Hand
+	 * clears dealer's hand and fills Discard Pile with cards that were discarded
+	 */
 	public void clear_hand() {
 		for(int i=0; i<this.hand.size();i++) {
 			Deck.DiscardDeck.add(this.hand.get(i));
@@ -52,7 +72,12 @@ public class Dealer {
 		this.hand.clear();
 		//System.out.println("Cards added " + Deck.DiscardDeck);
 	}
-		
+	
+	/**
+	 * Dealer hand Score
+	 * @param gameState current state of the Game
+	 * @return total score of the dealer's hand
+	 */
 	public int dealerHandScore(int gameState) {
 		int total = 0;
 		int numberOfCards = 0;
@@ -71,7 +96,18 @@ public class Dealer {
 	 * To Do: Show hand
 	 * Need to make a method in Card.java to show cards
 	 */
-	
+	/**
+	 * Show Dealer
+	 * @param hand LinkedList of cards present in Dealer's hand
+	 * @param gameState current state of the Game
+	 * @return total score of Dealer's Hand
+	 * This method performs differently depending on the game state
+	 * If it's called after a Deal, Dealer will have 2 cards, but only show 1 and that one's score, 
+	 * and hide the 2nd card and it's score with an X, designated hole card.
+	 * If called in any other moment, then it shows the Dealers complete hand, without the hole card
+	 * 
+	 * This method is also the method that deals with Soft and Hard hands of the Dealer
+	 */
 	public int showDealer(LinkedList<Card> hand, int gameState) {
 		System.out.print("dealer's hand ");
 		String cards = "";
@@ -119,6 +155,13 @@ public class Dealer {
 		return total;
 	}
 
+	/**
+	 * Rank Conversion Table
+	 * @param rank rank of the Card object
+	 * @return
+	 * 
+	 * Creates the conversion table for the Hi-lo strat
+	 */
 	public int rankConversionTable(char rank){
 		switch(rank){
 		case '2' : return 1; 
@@ -138,6 +181,11 @@ public class Dealer {
 		return 0;
 	}
 	
+	/**
+	 * Assigns Value to Rank
+	 * @param hand LinkedList of Card objects
+	 * @return Running Count for Hi-lo
+	 */
 	public int assignValueToRankD(LinkedList<Card> hand){
 		int auxRunningCount = 0;
 		int aux = 0;
@@ -155,6 +203,11 @@ public class Dealer {
 		return auxRunningCount;
 	}
 
+	/**
+	 * Count F&A Dealer
+	 * @param hand LinkeList of Card objects
+	 * @return number of aces and fives in the Dealer's hand
+	 */
 	public int countFivesAndAcesDealer(LinkedList<Card> hand){
 		String cards = "";
 		int counter = 0;
