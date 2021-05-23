@@ -5,6 +5,7 @@ import blackjack.*;
 import main.*;
 import player.*;
 import gameactions.GameActions;
+import gameactions.GameActions.adviceReturn;
 
 import java.util.*;
 import java.io.*;
@@ -28,6 +29,8 @@ public class Game extends GameActions{
 		int amount = 0;
 		int splits = 0;
 		int currentHand = 0;
+		
+		int numberOfShufflesLeft = shoe;
 		
 		/*game is initiated so state goes to INIT*/
 		this.state = INIT;
@@ -110,6 +113,7 @@ public class Game extends GameActions{
 						this.setState(SHOWDOWN);
 						this.showdown(player_score, dealer_score, p1, dealer, insured);
 						this.setState(INIT);
+						numberOfShufflesLeft--;
 						p1.clear_hand();
 						dealer.clear_hand();
 					}
@@ -141,6 +145,7 @@ public class Game extends GameActions{
 						this.setState(SHOWDOWN);
 						this.showdown(player_score, dealer_score, p1, dealer, insured);
 						this.setState(INIT);
+						numberOfShufflesLeft--;
 						p1.clear_hand();
 						dealer.clear_hand();
 					}
@@ -194,7 +199,15 @@ public class Game extends GameActions{
 			switch(cmdln) {
 			//advice
 			case "ad":
-				System.out.println("Advising");
+
+				int nextMoveBS = this.adviceBS(p1,dealer);
+				int nextMoveHL = this.adviceHL(p1, dealer, numberOfShufflesLeft);
+				
+				String basicStrategyMove = p1.convertMoveToString(nextMoveBS);
+				String hiloMove = p1.convertMoveToString(nextMoveHL);
+				
+				System.out.println("basic : \t" + basicStrategyMove);
+				System.out.println("hi-lo : \t" + hiloMove);
 				break;
 			//statistics
 			case "st":

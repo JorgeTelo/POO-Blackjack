@@ -434,6 +434,33 @@ public class Player {
 
 		return counter;
 	}
+	
+	public String convertMoveToString(int nextMove) {
+		//1 - hit
+		//2 - stand
+		//3 - split
+		//4 - double if possible, else hit
+		//5 - double if possible, else stand
+		//6 - surrender if possible, else hit
+		//7 - basic strategy
+		switch(nextMove) {
+		case 1 : 
+			return "hit";
+		case 2 : 
+			return "stand"; 
+		case 3 : 
+			return "split"; 
+		case 4 : 
+			return "double"; 
+		case 5 : 
+			return "double";
+		case 6 :
+			return "surrender";
+		case 7 :
+			return "basic strategy";
+		}
+		return "error";
+	}
 
 	
 }
