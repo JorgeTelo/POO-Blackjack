@@ -71,8 +71,8 @@ public class Player {
 		this.pbj++;
 	}
 	
-	public void playerGain() {
-		this.gain = (this.getInitialBalance() * 100) / this.getBalance();  
+	public double playerGain() {
+		return this.gain = (this.getBalance()* 100) / this.getInitialBalance() - 100;  
 	}
 
 	/*Adds new card to current hand*/

@@ -21,6 +21,9 @@ public class Game extends GameActions{
 		Scanner scan = null; /*reads from terminal*/
 		int player_score = 0;
 		int dealer_score = 0;
+		Boolean insured = false;
+		int justdealt = 0;
+		int amount = 0;
 		
 		/*game is initiated so state goes to INIT*/
 		this.state = INIT;
@@ -40,7 +43,6 @@ public class Game extends GameActions{
 			switch(cmd) {
 			//b
 			case 'b':
-				int amount = 0;
 				if(cmdln.length() > 1) {
 					
 					String bet = "";
@@ -80,21 +82,23 @@ public class Game extends GameActions{
 				break;
 			//deal
 			case 'd':
+				justdealt = 1;
 				player_score = this.dealing(dealer, p1, GameDeck);
 				//System.out.println("Dealing");
 				break;
 			//hit
 			case 'h':
+				justdealt = 0;
 				player_score = this.hitting(p1, GameDeck);
 				if(player_score > 21) {
 					this.setState(DEAL);
 					if(player_score < 22) {
-					dealer_score = this.standing(dealer);
+					dealer_score = this.standing(dealer, p1, player_score);
 					}else {
 						dealer_score = dealer.showDealer(dealer.hand, DEAL);
 					}
 					this.setState(SHOWDOWN);
-					this.showdown(player_score, dealer_score, p1, dealer);
+					this.showdown(player_score, dealer_score, p1, dealer, insured);
 					this.setState(INIT);
 					p1.clear_hand();
 					dealer.clear_hand();
@@ -104,27 +108,37 @@ public class Game extends GameActions{
 			//stand
 			case 's':
 				if(cmdln.length() < 2) {
-					System.out.println("player stands");
-					this.setState(DEAL);
-					if(player_score < 22) {
-						dealer_score = this.standing(dealer);
-					}else {
-						dealer_score = dealer.showDealer(dealer.hand, DEAL);
+					if(this.getState() == PLAY) {
+						System.out.println("player stands");
+						this.setState(DEAL);
+						if(player_score < 22) {
+							dealer_score = this.standing(dealer, p1, player_score);
+						}else {
+							dealer_score = dealer.showDealer(dealer.hand, DEAL);
+						}
+						this.setState(SHOWDOWN);
+						this.showdown(player_score, dealer_score, p1, dealer, insured);
+						this.setState(INIT);
+						p1.clear_hand();
+						dealer.clear_hand();
 					}
-					this.setState(SHOWDOWN);
-					this.showdown(player_score, dealer_score, p1, dealer);
-					this.setState(INIT);
-					p1.clear_hand();
-					dealer.clear_hand();
+					else {
+						this.illegalCommand('s');
+					}
 				}
 				break;
 			//insurance
 			case 'i':
-				System.out.println("Insuring");
+				insured = this.insurance(justdealt, p1, dealer, amount);
+				if(insured == true) {
+					justdealt = 2;
+					//System.out.println("player insured, current balance is" + p1.getBalance() );
+				}
 				break;
 			//surrender
 			case 'u':
-				System.out.println("Surrendering");
+				this.surrender(justdealt, p1, dealer, insured);
+				//System.out.println("Surrendering");
 				break;
 			//splitting
 			case 'p':
@@ -162,6 +176,8 @@ public class Game extends GameActions{
 		Player p1 = new Player(init_balance, min_bet, GameDeck);/*starting shuffled deck*/
 		
 		Dealer dealer = new Dealer();
+		
+		Boolean insured = false;
 
 		int numberOfShufflesLeft = s_number;
 		while(numberOfShufflesLeft > -100){
@@ -262,13 +278,13 @@ public class Game extends GameActions{
 					if(playerScore > 21) {
 						this.setState(DEAL);
 						if(playerScore < 22) {
-							dealerScoreFull = this.standing(dealer);
+							dealerScoreFull = this.standing(dealer, p1, playerScore);
 						}else {
 							dealerScoreFull = dealer.showDealer(dealer.hand, DEAL);
 						}
 						
 						this.setState(SHOWDOWN);
-						this.showdown(playerScore, dealerScoreFull, p1, dealer);
+						this.showdown(playerScore, dealerScoreFull, p1, dealer, insured);
 						this.setState(QUIT);
 						p1.clear_hand();
 						dealer.clear_hand();
@@ -278,12 +294,12 @@ public class Game extends GameActions{
 				case 2 : 
 					this.setState(DEAL);
 					if(playerScore < 22) {
-						dealerScoreFull = this.standing(dealer);
+						dealerScoreFull = this.standing(dealer, p1, playerScore);
 					}else {
 						dealerScoreFull = dealer.showDealer(dealer.hand, DEAL);
 					}
 					this.setState(SHOWDOWN);
-					this.showdown(playerScore, dealerScoreFull, p1, dealer);
+					this.showdown(playerScore, dealerScoreFull, p1, dealer, insured);
 					this.setState(QUIT);
 					numberOfShufflesLeft--;
 					p1.clear_hand();
@@ -303,13 +319,13 @@ public class Game extends GameActions{
 						if(playerScore > 21) {
 							this.setState(DEAL);
 							if(playerScore < 22) {
-								dealerScoreFull = this.standing(dealer);
+								dealerScoreFull = this.standing(dealer, p1, playerScore);
 							}else {
 								dealerScoreFull = dealer.showDealer(dealer.hand, DEAL);
 							}
 							
 							this.setState(SHOWDOWN);
-							this.showdown(playerScore, dealerScoreFull, p1, dealer);
+							this.showdown(playerScore, dealerScoreFull, p1, dealer, insured);
 							this.setState(QUIT);
 							numberOfShufflesLeft--;
 							p1.clear_hand();
@@ -323,13 +339,13 @@ public class Game extends GameActions{
 					if(doubleIsPossible2 == false){
 						this.setState(DEAL);
 						if(playerScore < 22) {
-							dealerScoreFull = this.standing(dealer);
+							dealerScoreFull = this.standing(dealer, p1, playerScore);
 						}else {
 							dealerScoreFull = dealer.showDealer(dealer.hand, DEAL);
 						}
 						
 						this.setState(SHOWDOWN);
-						this.showdown(playerScore, dealerScoreFull, p1, dealer);
+						this.showdown(playerScore, dealerScoreFull, p1, dealer, insured);
 						this.setState(QUIT);
 						numberOfShufflesLeft--;
 						p1.clear_hand();

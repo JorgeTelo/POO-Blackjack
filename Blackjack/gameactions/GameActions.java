@@ -57,8 +57,8 @@ public abstract class GameActions {
 	}
 	
 	protected void toquit(Player curr_player) {
-			System.out.println("Player exiting the game");
-			this.setState(QUIT);
+			System.out.println("Exiting Blackjack Simulator. See you next time!");
+			System.exit(0);
 	}
 	
 	public void betting(Player curr_player, int amount) {
@@ -118,25 +118,30 @@ public abstract class GameActions {
 		return score;
 	}
 	
-	public int standing(Dealer dealer) {
+	public int standing(Dealer dealer, Player curr_player, int pscore) {
 		int score = 0;
+		int pbj = 0;
 		while(this.getState()==DEAL) {
 			score = dealer.showDealer(dealer.hand, this.getState());
-			if(score > 21) {
+			if(pscore == 21 && curr_player.hand.size() == 2 && score <21 && dealer.hand.size() == 2) {
+				pbj = 1;
+				this.setState(SHOWDOWN);
+			}else if(score > 21) {
 				System.out.println("dealer busts");
 				this.setState(SHOWDOWN);
 			}
 			if(score >= 17 && score <= 21) {
 				System.out.println("dealer stands");
 				this.setState(SHOWDOWN);
-			}else if(score < 17){
+			}else if(score < 17 && pbj != 1){
 				System.out.println("dealer hits");
 				dealer.Add_cardtohand(GameDeck);
 			}					
 		}
 		return score;
 	}
-	public void showdown(int pscore, int dscore, Player curr_player, Dealer dealer) {
+	public void showdown(int pscore, int dscore, Player curr_player, Dealer dealer, Boolean insured) {
+		if(insured == false) {	
 			if(pscore > 21) { /*bust*/
 				curr_player.addLose();
 				System.out.println("player loses and his current balance is " + curr_player.getBalance());
@@ -148,15 +153,21 @@ public abstract class GameActions {
 			}else if(pscore == 21 && curr_player.hand.size() == 2) { /*player blackjack*/
 				curr_player.addPBJ();
 				if(dscore != 21) { /*auto win, dealer has no blackjack*/
+					curr_player.addWin();
 					System.out.println("blackjack!!");
 					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2.5));
-					System.out.println("player pushes and his current balance is " + curr_player.getBalance());
+					System.out.println("player wins and his current balance is " + curr_player.getBalance());
 				}else if(dscore == 21 && dealer.hand.size() == 2) { /*dealer has blackjack as well*/
 					dealer.addDBJ();
+					curr_player.addPush();
 					System.out.println("blackjack!!");
 					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
 					System.out.println("player pushes and his current balance is " + curr_player.getBalance());
 				}
+			}else if(dscore == 21 && dealer.hand.size() == 2 && pscore < 22) { /*dealer has blackjack, but player doesn't*/
+				System.out.println("blackjack!!");
+				curr_player.addLose();
+				System.out.println("player loses and his current balance is " + curr_player.getBalance());
 			}else if(pscore > dscore) { /*player has more value on his hand than dealer, without busts*/
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2));
 				curr_player.addWin();
@@ -168,9 +179,81 @@ public abstract class GameActions {
 			}else {/*dealer has higher valued hand*/
 				curr_player.addLose();
 				System.out.println("player loses and his current balance is " + curr_player.getBalance());
-			}		
+			}
+		}else { /*player is insured*/
+			if(pscore > 21) { /*bust*/
+				curr_player.addLose();
+				System.out.println("player loses and his current balance is " + curr_player.getBalance());
+			}
+			else if(pscore < 22 && dscore > 21) { /*dealer busts, player doesn't*/
+				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
+				curr_player.addWin();
+				System.out.println("player wins and his current balance is " + curr_player.getBalance());
+			}else if(pscore == 21 && curr_player.hand.size() == 2) { /*player blackjack*/
+				curr_player.addPBJ();
+				if(dscore != 21) { /*auto win, dealer has no blackjack*/
+					curr_player.addWin();
+					System.out.println("blackjack!!");
+					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*1.5));
+					System.out.println("player wins and his current balance is " + curr_player.getBalance());
+				}else if(dscore == 21 && dealer.hand.size() == 2) { /*dealer has blackjack as well*/
+					dealer.addDBJ();
+					curr_player.addPush();
+					System.out.println("blackjack!!");
+					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
+					System.out.println("player pushes and his current balance is " + curr_player.getBalance());
+				}
+			}else if(dscore == 21 && dealer.hand.size() == 2 && pscore < 22) { /*dealer has blackjack, but player doesn't*/
+				System.out.println("blackjack!!");
+				curr_player.addLose();
+				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2));
+				System.out.println("player loses and his current balance is " + curr_player.getBalance());
+			}else if(pscore > dscore) { /*player has more value on his hand than dealer, without busts*/
+				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
+				curr_player.addWin();
+				System.out.println("player wins and his current balance is " + curr_player.getBalance());
+			}else if(pscore == dscore) { /*player pushes*/
+				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()/2));
+				curr_player.addPush();
+				System.out.println("player pushes and his current balance is " + curr_player.getBalance());
+			}else {/*dealer has higher valued hand*/
+				curr_player.addLose();
+				System.out.println("player loses and his current balance is " + curr_player.getBalance());
+			}
+		}
 	}
 	
+	public Boolean insurance(int justdealt, Player curr_player, Dealer dealer, int amount) {
+		if(justdealt == 1 && Card.cardRank(dealer.hand.getFirst()) == 1) {
+			curr_player.minusBalance(curr_player.getBalance(), curr_player.getPrevious());
+			return true;
+		}else {
+			this.illegalCommand('i');
+		}
+		
+		return false;
+		
+	}
+	
+	public void surrender(int justdealt, Player curr_player, Dealer dealer, Boolean insured) {
+		if(justdealt == 1 || justdealt == 2) {
+			System.out.println("player is surrendering");
+			int dealer_score = dealer.showDealer(dealer.hand, DEAL);
+			if(dealer_score == 21 && insured == true) { // no need to put limit on hand size, since dealer will always have 2 cards max on surrender
+				System.out.println("blackjack!!");
+				curr_player.plusBalance((double)curr_player.getBalance(), (double)curr_player.getPrevious()*2.5);
+			}else {
+				curr_player.plusBalance((double)curr_player.getBalance(), (double)curr_player.getPrevious()/2);
+			}
+
+			System.out.println("player loses and his current balance is " + (double)curr_player.getBalance());
+			this.setState(INIT);
+			curr_player.clear_hand();
+			dealer.clear_hand();
+		}else {
+			this.illegalCommand('u');
+		}	
+	}
 	public Boolean doublingdown(Player curr_player, Dealer dealer) {
 		//return true if doublingdown is possible, False otherwise
 		int player_score = 0;
@@ -190,12 +273,12 @@ public abstract class GameActions {
 			/*runs the same code as if stand was commanded*/
 			this.setState(DEAL);
 			if(player_score < 22) {
-				dealer_score = this.standing(dealer);
+				dealer_score = this.standing(dealer, curr_player, player_score);
 			}else {
 				dealer_score = dealer.showDealer(dealer.hand, DEAL);
 			}
 			this.setState(SHOWDOWN);
-			this.showdown(player_score, dealer_score, curr_player, dealer);
+			this.showdown(player_score, dealer_score, curr_player, dealer, false);
 			this.setState(INIT);
 			curr_player.clear_hand();
 			dealer.clear_hand();
@@ -231,7 +314,7 @@ public abstract class GameActions {
 		averageWin = (double)curr_player.win / (double)this.handsPlayer;
 		averageLose = (double)curr_player.lose / (double)this.handsPlayer;
 		averagePush = (double)curr_player.push / (double)this.handsPlayer;
-		gain = curr_player.gain;
+		gain = curr_player.playerGain();
 		
 		System.out.println("BJ P/D		" + +curr_player.pbj +"  " + nf.format(averagePBJ) +"/" + nf.format(averageDBJ));
 		System.out.println("Win		" + nf.format(averageWin));
@@ -241,6 +324,7 @@ public abstract class GameActions {
 		
 				
 	}
+	
 	
 	protected void illegalCommand(char cmd) {
 		System.out.println(cmd + ": illegal command");
