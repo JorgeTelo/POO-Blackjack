@@ -49,8 +49,8 @@ public class Player {
 		/*
 		 * Starting with 2 cards on hand
 		 */
-		System.out.print("Player number " + playernum);
-		System.out.println(" initiated with balance of " + b);
+		//System.out.print("Player number " + playernum);
+		//System.out.println(" initiated with balance of " + b);
 		
 		
 	}

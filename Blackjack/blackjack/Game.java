@@ -23,6 +23,7 @@ public class Game extends GameActions{
 	 */
 	public void interactive(int min_bet, int max_bet, int init_balance, int shoe, int shuffle) {
 		Deck GameDeck = new Deck(shoe);
+		Deck DiscardPile = new Deck();
 		Player p1 = new Player(init_balance, min_bet, GameDeck);/*starting shuffled deck*/
 		Dealer dealer = new Dealer();
 		Scanner scan = null; /*reads from terminal*/
@@ -36,8 +37,6 @@ public class Game extends GameActions{
 		int splits = 0;
 		int currentHand = 0;
 		
-		int numberOfShufflesLeft = shoe;
-
 		
 		/*game is initiated so state goes to INIT*/
 		this.state = INIT;
@@ -47,7 +46,6 @@ public class Game extends GameActions{
 			
 			if(Deck.deckSize() < shoe*shuffle*52/100 && this.getState()==INIT) {
 				Deck.shuffle();
-				numberOfShufflesLeft--;
 			}
 			
 			scan = new Scanner(System.in);
@@ -58,6 +56,7 @@ public class Game extends GameActions{
 			}catch(StringIndexOutOfBoundsException e) {
 				cmd = '\0';
 			}
+			
 			
 			/*now that we have read the commands from the terminal, we will decide what each does*/
 			switch(cmd) {
@@ -111,7 +110,7 @@ public class Game extends GameActions{
 				justdealt = 0;
 				player_score = this.hitting(p1, GameDeck);
 				//if(this.getCurrent() == 0) {
-					if(player_score >= 21) {
+					if(player_score >= 21 || (player_score == 21 && p1.hand.size() == 2)) {
 						this.setState(DEAL);
 						if(dealer_score < 22) {
 						dealer_score = this.standing(dealer, p1, player_score);
@@ -201,9 +200,14 @@ public class Game extends GameActions{
 				this.toquit(p1);
 				break;
 			//advice
-			case "ad":
+			}
+			switch(cmdln) {
+			case "ad":		
+				int cardsLeft = Deck.deckSize();
+				int numberofShoesleft = cardsLeft/52;
+				
 				int nextMoveBS = this.adviceBS(p1,dealer);
-				int nextMoveHL = this.adviceHL(p1, dealer, numberOfShufflesLeft);
+				int nextMoveHL = this.adviceHL(p1, dealer, numberofShoesleft);
 				
 				String basicStrategyMove = p1.convertMoveToString(nextMoveBS);
 				String hiloMove = p1.convertMoveToString(nextMoveHL);
@@ -417,7 +421,7 @@ public class Game extends GameActions{
 	 */
 	public void simulation(int min_bet, int max_bet, int init_balance, int shoe, int shuffle, int s_number, String strategy) {
 		Deck GameDeck = new Deck(shoe);
-
+		Deck DiscardPile = new Deck();
 		Player p1 = new Player(init_balance, min_bet, GameDeck);/*starting shuffled deck*/
 		
 		Dealer dealer = new Dealer();
@@ -425,9 +429,14 @@ public class Game extends GameActions{
 		Boolean insured = false;
 
 		int numberOfShufflesLeft = s_number;
-		while(numberOfShufflesLeft > -100){
+		int jogadas = 1;
+		int roundResult = 0;
+		int hasDoubled = 0;
+
 		
-			
+		//player starts by betting min_bet
+		this.betting(p1, p1.getPrevious());			
+		p1.minusBalance(p1.getBalance(), p1.getPrevious());
 
 			int playerScore = 0;
 			int dealerScoreShowing = 0;
@@ -435,7 +444,7 @@ public class Game extends GameActions{
 			
 
 			this.state = SIMULATION;
-
+			System.out.println("Jogada nº" + jogadas);
 
 			for(int i=0;i<2;i++) {
 				p1.Add_cardtohand(GameDeck);
@@ -449,8 +458,49 @@ public class Game extends GameActions{
 			int aceFiveCount = 0; 
 			
 			while(state != QUIT) {
-
-
+				//previous round was a win
+				if(roundResult == 1 && this.getState() == INIT) {
+					if(p1.getPrevious()+min_bet <=max_bet) {
+						p1.updatePrevious(p1.getPrevious()+min_bet);
+						roundResult = 0;
+					}
+					p1.minusBalance(p1.getBalance(), p1.getPrevious());
+					this.betting(p1, p1.getPrevious());
+				}else if(roundResult == 2 && this.getState() == INIT) { //previous round was a lose
+					if(p1.getPrevious()-min_bet >= min_bet) {
+						p1.updatePrevious(p1.getPrevious()-min_bet);
+						roundResult = 0;
+					}
+					p1.minusBalance(p1.getBalance(), p1.getPrevious());
+					this.betting(p1, p1.getPrevious());
+				}else if(roundResult == 3&& this.getState() == INIT) { //previous round was a push
+					this.betting(p1, p1.getPrevious());
+					p1.minusBalance(p1.getBalance(), p1.getPrevious());
+					roundResult = 0;
+				}
+				if(Deck.deckSize() < shoe*shuffle*52/100) {
+					
+					Deck.shuffle();
+					numberOfShufflesLeft--;
+					System.out.println("shuffles left " + numberOfShufflesLeft);
+				}
+				
+				if(numberOfShufflesLeft <0) {
+					System.out.println("shuffles left " + numberOfShufflesLeft);
+					System.out.println("Sim has ended");
+					state = QUIT;
+					break;
+				}
+				
+				if(p1.hand.size()==0) {
+					for(int i=0;i<2;i++) {
+						p1.Add_cardtohand(GameDeck);
+						dealer.Add_cardtohand(GameDeck);
+					}
+					jogadas++;
+					System.out.println("Jogada nº" + jogadas);
+					this.setState(SIMULATION);
+				}
 				if ( (strategy.equals("BS")) || (strategy.equals("BS-AF")) ){
 
 					// Shows player hand
@@ -460,9 +510,9 @@ public class Game extends GameActions{
 					int auxDL = dealer.showDealer(dealer.hand, this.getState());
 
 					// get the dealer's card that is showing
-					dealerScoreShowing = dealer.dealerHandScore(this.getState());
+					dealerScoreShowing = dealer.dealerHandScore(SIMULATION);
 					dealerScoreFull = dealer.dealerHandScore(0);//since we pass zero, it will not read as simulation mode
-					System.out.println("Dealer score : " + dealerScoreShowing + " Full : " + dealerScoreFull);
+					System.out.println("Dealer score : " + dealerScoreShowing + " Full : " + auxDL);
 
 					//computes which table (1,2 or 3) we will use
 					int table = p1.getTable(p1.hand);
@@ -479,7 +529,7 @@ public class Game extends GameActions{
 
 					// Compute next move for the player
 					nextMove = p1.basicStrategy(dealerScoreShowing, table);
-					System.out.println("\n" + nextMove);
+					System.out.println("\nNext Move " + nextMove);
 
 					
 
@@ -493,7 +543,7 @@ public class Game extends GameActions{
 					// get the dealer's card that is showing
 					dealerScoreShowing = dealer.dealerHandScore(this.getState());
 					dealerScoreFull = dealer.dealerHandScore(0);//since we pass zero, it will not read as simulation mode
-					System.out.println("Dealer score : " + dealerScoreShowing + " Full : " + dealerScoreFull);
+					System.out.println("Dealer score : " + dealerScoreShowing + " Full : " + auxHL);
 
 					int runningCount = 0;
 
@@ -520,7 +570,7 @@ public class Game extends GameActions{
 
 				case 1 :
 					playerScore = this.hitting(p1, GameDeck);
-					if(playerScore > 21) {
+					if(playerScore > 21|| (playerScore == 21 && p1.hand.size() == 2)) {
 						this.setState(DEAL);
 						if(playerScore < 22) {
 							dealerScoreFull = this.standing(dealer, p1, playerScore);
@@ -529,8 +579,8 @@ public class Game extends GameActions{
 						}
 						
 						this.setState(SHOWDOWN);
-						this.showdown(playerScore, dealerScoreFull, p1, dealer, insured);
-						this.setState(QUIT);
+						roundResult =this.showdown(playerScore, dealerScoreFull, p1, dealer, insured);
+						this.setState(INIT);
 						p1.clear_hand();
 						dealer.clear_hand();
 						
@@ -544,9 +594,8 @@ public class Game extends GameActions{
 						dealerScoreFull = dealer.showDealer(dealer.hand, DEAL);
 					}
 					this.setState(SHOWDOWN);
-					this.showdown(playerScore, dealerScoreFull, p1, dealer, insured);
-					this.setState(QUIT);
-					numberOfShufflesLeft--;
+					roundResult = this.showdown(playerScore, dealerScoreFull, p1, dealer, insured);
+					this.setState(INIT);
 					p1.clear_hand();
 					dealer.clear_hand();
 					break;
@@ -570,9 +619,8 @@ public class Game extends GameActions{
 							}
 							
 							this.setState(SHOWDOWN);
-							this.showdown(playerScore, dealerScoreFull, p1, dealer, insured);
-							this.setState(QUIT);
-							numberOfShufflesLeft--;
+							roundResult = this.showdown(playerScore, dealerScoreFull, p1, dealer, insured);
+							this.setState(INIT);
 							p1.clear_hand();
 							dealer.clear_hand();
 							
@@ -590,9 +638,8 @@ public class Game extends GameActions{
 						}
 						
 						this.setState(SHOWDOWN);
-						this.showdown(playerScore, dealerScoreFull, p1, dealer, insured);
-						this.setState(QUIT);
-						numberOfShufflesLeft--;
+						roundResult = this.showdown(playerScore, dealerScoreFull, p1, dealer, insured);
+						this.setState(INIT);
 						p1.clear_hand();
 						dealer.clear_hand();
 						
@@ -600,22 +647,23 @@ public class Game extends GameActions{
 					break;
 				case 6 :
 					System.out.println("Surrender");
-					this.setState(QUIT);
+					this.setState(INIT);
 					p1.clear_hand();
-						dealer.clear_hand();
+					dealer.clear_hand();
 					break;
 				case 7 : 
 					System.out.println("Switching to BS");
-						this.setState(QUIT);
+						this.setState(INIT);
 
 					//strategy = "BS";
 					p1.clear_hand();
 						dealer.clear_hand();
 					break;
 				}
+				//System.out.println("Shuffles left" + numberOfShufflesLeft);
 			}
-		}
-		//this.statistics(p1, dealer);
+		
+		this.statistics(p1, dealer);
 
 				
 	}

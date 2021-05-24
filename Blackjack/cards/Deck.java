@@ -91,7 +91,7 @@ public class Deck {
 	 * Used to determine if a new shuffle is required
 	 * @return current size of GameDeck
 	 */
-	public  static int deckSize() {
+	public static int deckSize() {
 		return Deck.GameDeck.size();
 	}
 	 

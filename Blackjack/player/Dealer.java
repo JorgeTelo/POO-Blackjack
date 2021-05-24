@@ -114,11 +114,11 @@ public class Dealer {
 		int total = 0;
 		int hasace = 0;
 		
-		if(gameState == PLAY || gameState == SIMULATION) {
+		if(gameState == PLAY) {
 			cards = hand.getFirst() + " X"; /*X is the hole card*/
 			System.out.println(cards);
 
-		}else if(gameState == DEAL) {
+		}else if(gameState == DEAL || gameState == SIMULATION) {
 			Iterator<Card> iterator = hand.iterator();
 			
 			while(iterator.hasNext()) {

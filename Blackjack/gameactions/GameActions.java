@@ -67,16 +67,6 @@ public abstract class GameActions {
 	}
 	
 	/**
-	 * Deck Shuffle
-	 * @param shoe number of shoes
-	 * 
-	 * Method to re-shuffle GameDeck when shuffle % is reached
-	 */
-	public void shuffle(int shoe) {
-		this.GameDeck = new Deck(shoe);
-	}
-	
-	/**
 	 * Increase amount of hands played by the player, to use for statistics
 	 */
 	public void addPlayerHand() {
@@ -227,17 +217,26 @@ public abstract class GameActions {
 	 * @param curr_player Player object
 	 * @param dealer Dealer
 	 * @param insured if player has insured or not
+	 * @return 0 dummy || 1 if win || 2 if lose || 3 if push || these returns are used for the simulation standard bet strategy
 	 */
-	public void showdown(int pscore, int dscore, Player curr_player, Dealer dealer, Boolean insured) {
+	public int showdown(int pscore, int dscore, Player curr_player, Dealer dealer, Boolean insured) {
 		if(insured == false) {	
 			if(pscore > 21) { /*bust*/
 				curr_player.addLose();
 				System.out.println("player loses and his current balance is " + curr_player.getBalance());
+				this.addPlayerHand();
+				this.addDealerHand();
+				System.out.println("");
+				return 2;
 			}
 			else if(pscore < 22 && dscore > 21) { /*dealer busts, player doesn't*/
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2));
 				curr_player.addWin();
 				System.out.println("player wins and his current balance is " + curr_player.getBalance());
+				this.addPlayerHand();
+				this.addDealerHand();
+				System.out.println("");
+				return 1;
 			}else if(pscore == 21 && curr_player.hand.size() == 2) { /*player blackjack*/
 				curr_player.addPBJ();
 				if(dscore != 21) { /*auto win, dealer has no blackjack*/
@@ -245,38 +244,70 @@ public abstract class GameActions {
 					System.out.println("blackjack!!");
 					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2.5));
 					System.out.println("player wins and his current balance is " + curr_player.getBalance());
+					this.addPlayerHand();
+					this.addDealerHand();
+					System.out.println("");
+					return 1;
 				}else if(dscore == 21 && dealer.hand.size() == 2) { /*dealer has blackjack as well*/
 					dealer.addDBJ();
 					curr_player.addPush();
 					System.out.println("blackjack!!");
 					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
 					System.out.println("player pushes and his current balance is " + curr_player.getBalance());
+					this.addPlayerHand();
+					this.addDealerHand();
+					System.out.println("");
+					return 3;
 				}
 			}else if(dscore == 21 && dealer.hand.size() == 2 && pscore < 22) { /*dealer has blackjack, but player doesn't*/
 				System.out.println("blackjack!!");
 				curr_player.addLose();
 				System.out.println("player loses and his current balance is " + curr_player.getBalance());
+				this.addPlayerHand();
+				this.addDealerHand();
+				System.out.println("");
+				return 2;
 			}else if(pscore > dscore) { /*player has more value on his hand than dealer, without busts*/
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2));
 				curr_player.addWin();
 				System.out.println("player wins and his current balance is " + curr_player.getBalance());
+				this.addPlayerHand();
+				this.addDealerHand();
+				System.out.println("");
+				return 1;
 			}else if(pscore == dscore) { /*player pushes*/
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
 				curr_player.addPush();
 				System.out.println("player pushes and his current balance is " + curr_player.getBalance());
-			}else {/*dealer has higher valued hand*/
+				this.addPlayerHand();
+				this.addDealerHand();
+				System.out.println("");
+				return 3;
+			}else if(dscore > pscore){/*dealer has higher valued hand*/
 				curr_player.addLose();
 				System.out.println("player loses and his current balance is " + curr_player.getBalance());
+				this.addPlayerHand();
+				this.addDealerHand();
+				System.out.println("");
+				return 2;
 			}
 		}else { /*player is insured*/
 			if(pscore > 21) { /*bust*/
 				curr_player.addLose();
 				System.out.println("player loses and his current balance is " + curr_player.getBalance());
+				this.addPlayerHand();
+				this.addDealerHand();
+				System.out.println("");
+				return 2;
 			}
 			else if(pscore < 22 && dscore > 21) { /*dealer busts, player doesn't*/
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
 				curr_player.addWin();
 				System.out.println("player wins and his current balance is " + curr_player.getBalance());
+				this.addPlayerHand();
+				this.addDealerHand();
+				System.out.println("");
+				return 1;
 			}else if(pscore == 21 && curr_player.hand.size() == 2) { /*player blackjack*/
 				curr_player.addPBJ();
 				if(dscore != 21) { /*auto win, dealer has no blackjack*/
@@ -284,32 +315,56 @@ public abstract class GameActions {
 					System.out.println("blackjack!!");
 					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*1.5));
 					System.out.println("player wins and his current balance is " + curr_player.getBalance());
+					this.addPlayerHand();
+					this.addDealerHand();
+					System.out.println("");
+					return 1;
 				}else if(dscore == 21 && dealer.hand.size() == 2) { /*dealer has blackjack as well*/
 					dealer.addDBJ();
 					curr_player.addPush();
 					System.out.println("blackjack!!");
 					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
 					System.out.println("player pushes and his current balance is " + curr_player.getBalance());
+					this.addPlayerHand();
+					this.addDealerHand();
+					System.out.println("");
+					return 3;
 				}
 			}else if(dscore == 21 && dealer.hand.size() == 2 && pscore < 22) { /*dealer has blackjack, but player doesn't*/
 				System.out.println("blackjack!!");
 				curr_player.addLose();
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2));
 				System.out.println("player loses and his current balance is " + curr_player.getBalance());
+				this.addPlayerHand();
+				this.addDealerHand();
+				System.out.println("");
+				return 2;
 			}else if(pscore > dscore) { /*player has more value on his hand than dealer, without busts*/
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
 				curr_player.addWin();
 				System.out.println("player wins and his current balance is " + curr_player.getBalance());
+				this.addPlayerHand();
+				this.addDealerHand();
+				System.out.println("");
+				return 1;
 			}else if(pscore == dscore) { /*player pushes*/
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()/2));
 				curr_player.addPush();
 				System.out.println("player pushes and his current balance is " + curr_player.getBalance());
-			}else {/*dealer has higher valued hand*/
+				this.addPlayerHand();
+				this.addDealerHand();
+				System.out.println("");
+				return 3;
+			}else if( pscore < dscore) {/*dealer has higher valued hand*/
 				curr_player.addLose();
 				System.out.println("player loses and his current balance is " + curr_player.getBalance());
+				this.addPlayerHand();
+				this.addDealerHand();
+				System.out.println("");
+				return 2;
 			}
 		}
-		System.out.println("");
+		return 0;
 	}
 	
 	/**
@@ -421,7 +476,7 @@ public abstract class GameActions {
 
 	}
 	
-	public int adviceHL(Player curr_player, Dealer dealer, int numberOfShufflesLeft) {
+	public int adviceHL(Player curr_player, Dealer dealer, int numberOfShoesLeft) {
 		// For HI-LO advice	
 		int playerScore = curr_player.showHand(curr_player.hand);
 	
@@ -429,7 +484,7 @@ public abstract class GameActions {
 		runningCount = runningCount + curr_player.assignValueToRank(curr_player.hand);
 		runningCount = runningCount + dealer.assignValueToRankD(dealer.hand);
 	
-		float trueCount = (runningCount/numberOfShufflesLeft);
+		float trueCount = (runningCount/numberOfShoesLeft);
 	
 		int nextMoveHL = curr_player.Illustrious18ANDFab4(trueCount, playerScore, dealer.hand);
 		
@@ -464,7 +519,7 @@ public abstract class GameActions {
 		averagePush = (double)curr_player.push / (double)this.handsPlayer;
 		gain = curr_player.playerGain();
 		
-		System.out.println("BJ P/D		" + +curr_player.pbj +"  " + nf.format(averagePBJ) +"/" + nf.format(averageDBJ));
+		System.out.println("BJ P/D		" + nf.format(averagePBJ) +"/" + nf.format(averageDBJ));
 		System.out.println("Win		" + nf.format(averageWin));
 		System.out.println("Lose		" + nf.format(averageLose));
 		System.out.println("Push		" + nf.format(averagePush));
