@@ -108,15 +108,17 @@ public class Dealer {
 	 * 
 	 * This method is also the method that deals with Soft and Hard hands of the Dealer
 	 */
-	public int showDealer(LinkedList<Card> hand, int gameState) {
-		System.out.print("dealer's hand ");
+	public int showDealer(LinkedList<Card> hand, int gameState, int sim) {
+		if(sim == 0)
+			System.out.print("dealer's hand ");
 		String cards = "";
 		int total = 0;
 		int hasace = 0;
 		
 		if(gameState == PLAY) {
 			cards = hand.getFirst() + " X"; /*X is the hole card*/
-			System.out.println(cards);
+			if(sim == 0)
+				System.out.println(cards);
 
 		}else if(gameState == DEAL || gameState == SIMULATION) {
 			Iterator<Card> iterator = hand.iterator();
@@ -137,17 +139,19 @@ public class Dealer {
 			
 			if(hand.size() == 2 && hasace >=1 && total + 10 >= 17) {
 				total+=10;
-				System.out.println(cards + "(" + total + ")");
+				if(sim == 0)
+					System.out.println(cards + "(" + total + ")");
 				return total;
 			}
 			else if(hasace >=1 && total + 10 <= 21) {
 				total+=10;
-				System.out.println(cards + "(" + total + ")");
+				if(sim == 0)
+					System.out.println(cards + "(" + total + ")");
 				return total;
 			}
 			
-			
-			System.out.println(cards + "(" + total + ")");
+			if(sim == 0)
+				System.out.println(cards + "(" + total + ")");
 			
 			
 		}

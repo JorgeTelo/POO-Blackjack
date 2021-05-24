@@ -1,7 +1,7 @@
 package cards;
 
 import java.util.*; /*Imports all funtions of java.util*/
-
+import java.io.*;
 /**
  * Class Deck
  * Contains Methods related to card drawing, shuffling and getting Deck parameters, like it's size
@@ -17,7 +17,7 @@ public class Deck {
 	 * Constructor: Creates the GameDeck that will be used for the entirety of the game and instantly performs the initial shuffle
 	 * @param shoe number of decks used to create the GameDeck LinkedList
 	 */
-	public Deck(int shoe) {
+	public Deck(int shoe, int sim) {
 		Card[][] Decks = new Card[shoe][52];
 		// total = 0;
 		int index;
@@ -56,7 +56,8 @@ public class Deck {
 			}
 		}
 		Collections.shuffle(GameDeck);
-		System.out.println("Shuffling the shoe ...");
+		if(sim == 0)
+			System.out.println("Shuffling the shoe ...");
 		//stem.out.println("Shuffled deck " + GameDeck.get(5));
 	}
 	/**
@@ -66,8 +67,61 @@ public class Deck {
 	public Deck() {
 	}
 	
-	
+	/**
+	 * Constructor for Debug mode
+	 * @param show_file file to be read
+	 */
+	public Deck(String shoe_file) {
+		int s, rank, score;
+		char cardSuit = '\0';
+		char cardRank = '\0';
+		int iterator = 0;
 
+		
+		BufferedReader br = null;
+		FileReader fr = null;
+		
+		try {
+			fr = new FileReader(shoe_file);
+			br = new BufferedReader(fr);
+			
+			String fileLine;
+			//fileLine saves the line from the file, since the file is considered 1 big line
+			fileLine = br.readLine();
+			
+			while(iterator < fileLine.length()) {
+				if(fileLine.charAt(iterator) == ' ') { //if finds a space, ignore it and move forward
+					iterator++;
+					continue;
+				}
+				
+				//in the file the rank of the card always comes before the suit, so it's easy to predict
+				rank  = Card.StringtoRank(fileLine.charAt(iterator));
+				iterator++;
+				if(fileLine.charAt(iterator) == '0') {
+					//System.out.println("10 was found");
+					rank = Card.StringtoRank('T');
+					iterator++;
+				}
+				s = Card.StringtoSuit(fileLine.charAt(iterator));
+				iterator++;
+				
+					if(rank < 11) {
+						score = rank;
+						Card readCard = new Card(score, s, rank); /* If it's a number or Ace, automatically adds their value, Ace considered 1 for now*/
+						GameDeck.addLast(readCard);
+					} else {
+						score = 10;
+						Card readCard = new Card(score,s, rank); /*If it's a figure, it uses this statement since figures are 10 points*/
+						GameDeck.addLast(readCard);
+					}
+			}
+		}catch(IOException e){//when file is fully ready, exception breaks the loop
+			e.printStackTrace();
+		}
+		
+		//System.out.println("Shuffled deck " + GameDeck);
+	}
 
 	//Drawing cards from Deck
 	/**
@@ -102,14 +156,15 @@ public class Deck {
 	 * Shuffle
 	 * When called, empties the DiscardDeck into the GameDeck, and shuffles the refilled GameDeck
 	 */
-	public static void shuffle() {
+	public static void shuffle(int sim) {
 		for(int i=0; i<Deck.DiscardDeck.size();i++) {
 			Deck.GameDeck.add(Deck.DiscardDeck.get(i));
 		}
 		
 		DiscardDeck.clear();
 		Collections.shuffle(GameDeck);
-		System.out.println("Shuffling the shoe ...");
+		if(sim == 0)
+			System.out.println("Shuffling the shoe ...");
 	}
 	
 }

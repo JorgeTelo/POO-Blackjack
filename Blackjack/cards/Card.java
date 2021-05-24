@@ -73,6 +73,8 @@ public class Card {
 	 * @return value of the rank of the card evaluated
 	 */
 	public static int StringtoRank(char rank) {
+		if(rank == 'T')
+			return 10;
 		if(rank == 'J')
 			return J;
 		if(rank == 'Q')

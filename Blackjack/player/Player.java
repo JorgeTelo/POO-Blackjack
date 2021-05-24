@@ -207,8 +207,8 @@ public class Player {
 	 * 
 	 * Prints the player hand and it's score before returning
 	 */
-	public int showHand(LinkedList<Card> hand) {
-		//if(currentHand == 0) {
+	public int showHand(LinkedList<Card> hand, int sim) {
+		if(sim == 0) 
 			System.out.print("player's hand ");
 		//}else if(currentHand > 0) {
 			//System.out.print("player's hand [" + currentHand + "] ");
@@ -235,11 +235,14 @@ public class Player {
 		
 		if(hasace >=1 && total + 10 <= 21) {
 			total+=10;
-			System.out.println(cards + "(" + total + ")");
+			if(sim == 0)
+				System.out.println(cards + "(" + total + ")");
+			
 			return total;
 		}
+		if(sim == 0)
+			System.out.println(cards + "(" + total + ")");
 		
-		System.out.println(cards + "(" + total + ")");
 		return total;
 	}
 	

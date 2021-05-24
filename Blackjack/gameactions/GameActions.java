@@ -105,16 +105,18 @@ public abstract class GameActions {
 	 * @param curr_player Player that made the bet
 	 * @param amount Amount being used for bet
 	 */
-	public void betting(Player curr_player, int amount) {
+	public void betting(Player curr_player, int amount, int sim) {
 		if(this.getState() == INIT) {
 			curr_player.updatePrevious(amount);
-			System.out.println("player is betting " + amount);
+			if(sim == 0)
+				System.out.println("player is betting " + amount);
 			this.setState(BET);
 		}else {
-			System.out.println("player is betting " + curr_player.getPrevious());
+			if(sim == 0)
+				System.out.println("player is betting " + curr_player.getPrevious());
 		}
-		
-		System.out.println("");
+		if(sim == 0)
+			System.out.println("");
 	}
 	
 	/**
@@ -124,7 +126,7 @@ public abstract class GameActions {
 	 * @param GameDeck Current Deck
 	 * @return player's hand score
 	 */
-	public int dealing(Dealer curr_dealer, Player curr_player, Deck GameDeck) {
+	public int dealing(Dealer curr_dealer, Player curr_player, Deck GameDeck, int sim) {
 		int score = 0;
 		if(this.getState() == BET) {
 			curr_player.minusBalance(curr_player.getBalance(), curr_player.getPrevious());
@@ -135,16 +137,18 @@ public abstract class GameActions {
 				curr_player.Add_cardtohand(GameDeck);
 			}
 			this.setState(PLAY);
-			curr_dealer.showDealer(curr_dealer.hand, this.getState());
-			score = curr_player.showHand(curr_player.hand);
+			curr_dealer.showDealer(curr_dealer.hand, this.getState(), sim);
+			score = curr_player.showHand(curr_player.hand, sim);
 			this.addDealerHand();
 			//System.out.println("Number of hands held by dealer " + this.handsDealer);
 			this.addPlayerHand();
 			//System.out.println("Number of hands held by player " + this.handsPlayer);
 		}else {
-			this.illegalCommand('d');
+			if(sim == 0)
+				this.illegalCommand('d');
 		}
-		System.out.println("");
+		if(sim == 0)
+			System.out.println("");
 		return score;
 	}
 	
@@ -159,22 +163,25 @@ public abstract class GameActions {
 	 * @param GameDeck Current Game Deck
 	 * @return player's hand score
 	 */
-	public int hitting(Player curr_player, Deck GameDeck) {
+	public int hitting(Player curr_player, Deck GameDeck, int sim) {
 		int score = 0;
 		if(this.getState() == PLAY) {
-			
-			System.out.println("player hits");
+			if(sim == 0)
+				System.out.println("player hits");
 			curr_player.Add_cardtohand(GameDeck);
-			score = curr_player.showHand(curr_player.hand);
+			score = curr_player.showHand(curr_player.hand, sim);
 			
 		}else {
-			this.illegalCommand('h');
-			System.out.println("");
+			if(sim == 0) {
+				this.illegalCommand('h');
+				System.out.println("");
+			}
 		}
 		
 		if (score > 21) {
+			if(sim == 0)
 				System.out.println("player busts");
-				this.setState(STAND);	
+			this.setState(STAND);	
 		}
 		return score;
 	}
@@ -186,24 +193,26 @@ public abstract class GameActions {
 	 * @param pscore player's hand score
 	 * @return player's score
 	 */
-	public int standing(Dealer dealer, Player curr_player, int pscore) {
+	public int standing(Dealer dealer, Player curr_player, int pscore, int sim) {
 		int score = 0;
 		int pbj = 0;
 		while(this.getState()==DEAL) {
-			score = dealer.showDealer(dealer.hand, this.getState());
+			score = dealer.showDealer(dealer.hand, this.getState(), sim);
 			if(pscore == 21 && curr_player.hand.size() == 2 && score <21 && dealer.hand.size() == 2) {
 				pbj = 1;
 				this.setState(SHOWDOWN);
 			}else if(score > 21) {
-				if(currentHand == 0)
-				System.out.println("dealer busts");
+				if(sim == 0)
+					System.out.println("dealer busts");
 				this.setState(SHOWDOWN);
 			}
 			if(score >= 17 && score <= 21) {
-				System.out.println("dealer stands");
+				if(sim == 0)
+					System.out.println("dealer stands");
 				this.setState(SHOWDOWN);
 			}else if(score < 17 && pbj != 1){
-				System.out.println("dealer hits");
+				if(sim == 0)
+					System.out.println("dealer hits");
 				dealer.Add_cardtohand(GameDeck);
 			}					
 		}
@@ -219,148 +228,186 @@ public abstract class GameActions {
 	 * @param insured if player has insured or not
 	 * @return 0 dummy || 1 if win || 2 if lose || 3 if push || these returns are used for the simulation standard bet strategy
 	 */
-	public int showdown(int pscore, int dscore, Player curr_player, Dealer dealer, Boolean insured) {
+	public int showdown(int pscore, int dscore, Player curr_player, Dealer dealer, Boolean insured, int sim) {
 		if(insured == false) {	
 			if(pscore > 21) { /*bust*/
 				curr_player.addLose();
-				System.out.println("player loses and his current balance is " + curr_player.getBalance());
+				if(sim == 0)
+					System.out.println("player loses and his current balance is " + curr_player.getBalance());
 				this.addPlayerHand();
 				this.addDealerHand();
-				System.out.println("");
+				if(sim == 0)
+					System.out.println("");
 				return 2;
 			}
 			else if(pscore < 22 && dscore > 21) { /*dealer busts, player doesn't*/
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2));
 				curr_player.addWin();
-				System.out.println("player wins and his current balance is " + curr_player.getBalance());
+				if(sim == 0)
+					System.out.println("player wins and his current balance is " + curr_player.getBalance());
 				this.addPlayerHand();
 				this.addDealerHand();
-				System.out.println("");
+				if(sim == 0)
+					System.out.println("");
 				return 1;
 			}else if(pscore == 21 && curr_player.hand.size() == 2) { /*player blackjack*/
 				curr_player.addPBJ();
 				if(dscore != 21) { /*auto win, dealer has no blackjack*/
 					curr_player.addWin();
-					System.out.println("blackjack!!");
+					if(sim == 0)
+						System.out.println("blackjack!!");
 					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2.5));
-					System.out.println("player wins and his current balance is " + curr_player.getBalance());
+					if(sim == 0)
+						System.out.println("player wins and his current balance is " + curr_player.getBalance());
 					this.addPlayerHand();
 					this.addDealerHand();
-					System.out.println("");
+					if(sim == 0)
+						System.out.println("");
 					return 1;
 				}else if(dscore == 21 && dealer.hand.size() == 2) { /*dealer has blackjack as well*/
 					dealer.addDBJ();
 					curr_player.addPush();
-					System.out.println("blackjack!!");
+					if(sim == 0)
+						System.out.println("blackjack!!");
 					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
-					System.out.println("player pushes and his current balance is " + curr_player.getBalance());
+					if(sim == 0)
+						System.out.println("player pushes and his current balance is " + curr_player.getBalance());
 					this.addPlayerHand();
 					this.addDealerHand();
-					System.out.println("");
+					if(sim == 0)
+						System.out.println("");
 					return 3;
 				}
 			}else if(dscore == 21 && dealer.hand.size() == 2 && pscore < 22) { /*dealer has blackjack, but player doesn't*/
-				System.out.println("blackjack!!");
+				if(sim == 0)
+					System.out.println("blackjack!!");
 				curr_player.addLose();
-				System.out.println("player loses and his current balance is " + curr_player.getBalance());
+				if(sim == 0)
+					System.out.println("player loses and his current balance is " + curr_player.getBalance());
 				this.addPlayerHand();
 				this.addDealerHand();
-				System.out.println("");
+				if(sim == 0)
+					System.out.println("");
 				return 2;
 			}else if(pscore > dscore) { /*player has more value on his hand than dealer, without busts*/
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2));
 				curr_player.addWin();
-				System.out.println("player wins and his current balance is " + curr_player.getBalance());
+				if(sim == 0)
+					System.out.println("player wins and his current balance is " + curr_player.getBalance());
 				this.addPlayerHand();
 				this.addDealerHand();
-				System.out.println("");
+				if(sim == 0)
+					System.out.println("");
 				return 1;
 			}else if(pscore == dscore) { /*player pushes*/
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
 				curr_player.addPush();
-				System.out.println("player pushes and his current balance is " + curr_player.getBalance());
+				if(sim == 0)
+					System.out.println("player pushes and his current balance is " + curr_player.getBalance());
 				this.addPlayerHand();
 				this.addDealerHand();
-				System.out.println("");
+				if(sim == 0)
+					System.out.println("");
 				return 3;
 			}else if(dscore > pscore){/*dealer has higher valued hand*/
 				curr_player.addLose();
-				System.out.println("player loses and his current balance is " + curr_player.getBalance());
+				if(sim == 0)
+					System.out.println("player loses and his current balance is " + curr_player.getBalance());
 				this.addPlayerHand();
 				this.addDealerHand();
-				System.out.println("");
+				if(sim == 0)
+					System.out.println("");
 				return 2;
 			}
 		}else { /*player is insured*/
 			if(pscore > 21) { /*bust*/
 				curr_player.addLose();
-				System.out.println("player loses and his current balance is " + curr_player.getBalance());
+				if(sim == 0)
+					System.out.println("player loses and his current balance is " + curr_player.getBalance());
 				this.addPlayerHand();
 				this.addDealerHand();
-				System.out.println("");
+				if(sim == 0)
+					System.out.println("");
 				return 2;
 			}
 			else if(pscore < 22 && dscore > 21) { /*dealer busts, player doesn't*/
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
 				curr_player.addWin();
-				System.out.println("player wins and his current balance is " + curr_player.getBalance());
+				if(sim == 0)
+					System.out.println("player wins and his current balance is " + curr_player.getBalance());
 				this.addPlayerHand();
 				this.addDealerHand();
-				System.out.println("");
+				if(sim == 0)
+					System.out.println("");
 				return 1;
 			}else if(pscore == 21 && curr_player.hand.size() == 2) { /*player blackjack*/
 				curr_player.addPBJ();
 				if(dscore != 21) { /*auto win, dealer has no blackjack*/
 					curr_player.addWin();
-					System.out.println("blackjack!!");
+					if(sim == 0)
+						System.out.println("blackjack!!");
 					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*1.5));
-					System.out.println("player wins and his current balance is " + curr_player.getBalance());
+					if(sim == 0)
+						System.out.println("player wins and his current balance is " + curr_player.getBalance());
 					this.addPlayerHand();
 					this.addDealerHand();
-					System.out.println("");
+					if(sim == 0)
+						System.out.println("");
 					return 1;
 				}else if(dscore == 21 && dealer.hand.size() == 2) { /*dealer has blackjack as well*/
 					dealer.addDBJ();
 					curr_player.addPush();
-					System.out.println("blackjack!!");
+					if(sim == 0)
+						System.out.println("blackjack!!");
 					curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
-					System.out.println("player pushes and his current balance is " + curr_player.getBalance());
+					if(sim == 0)
+						System.out.println("player pushes and his current balance is " + curr_player.getBalance());
 					this.addPlayerHand();
 					this.addDealerHand();
-					System.out.println("");
+					if(sim == 0)
+						System.out.println("");
 					return 3;
 				}
 			}else if(dscore == 21 && dealer.hand.size() == 2 && pscore < 22) { /*dealer has blackjack, but player doesn't*/
-				System.out.println("blackjack!!");
+				if(sim == 0)
+					System.out.println("blackjack!!");
 				curr_player.addLose();
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()*2));
-				System.out.println("player loses and his current balance is " + curr_player.getBalance());
+				if(sim == 0)
+					System.out.println("player loses and his current balance is " + curr_player.getBalance());
 				this.addPlayerHand();
 				this.addDealerHand();
-				System.out.println("");
+				if(sim == 0)
+					System.out.println("");
 				return 2;
 			}else if(pscore > dscore) { /*player has more value on his hand than dealer, without busts*/
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()));
 				curr_player.addWin();
-				System.out.println("player wins and his current balance is " + curr_player.getBalance());
+				if(sim == 0)
+					System.out.println("player wins and his current balance is " + curr_player.getBalance());
 				this.addPlayerHand();
 				this.addDealerHand();
-				System.out.println("");
+				if(sim == 0)
+					System.out.println("");
 				return 1;
 			}else if(pscore == dscore) { /*player pushes*/
 				curr_player.plusBalance(curr_player.getBalance(), (curr_player.getPrevious()/2));
 				curr_player.addPush();
-				System.out.println("player pushes and his current balance is " + curr_player.getBalance());
+				if(sim == 0)
+					System.out.println("player pushes and his current balance is " + curr_player.getBalance());
 				this.addPlayerHand();
 				this.addDealerHand();
-				System.out.println("");
+				if(sim == 0)
+					System.out.println("");
 				return 3;
 			}else if( pscore < dscore) {/*dealer has higher valued hand*/
 				curr_player.addLose();
+					if(sim == 0)
 				System.out.println("player loses and his current balance is " + curr_player.getBalance());
 				this.addPlayerHand();
 				this.addDealerHand();
-				System.out.println("");
+				if(sim == 0)
+					System.out.println("");
 				return 2;
 			}
 		}
@@ -375,15 +422,18 @@ public abstract class GameActions {
 	 * @param amount 
 	 * @return
 	 */
-	public Boolean insurance(int justdealt, Player curr_player, Dealer dealer) {
+	public Boolean insurance(int justdealt, Player curr_player, Dealer dealer, int sim) {
 		if(justdealt == 1 && Card.cardRank(dealer.hand.getFirst()) == 1) {
 			curr_player.minusBalance(curr_player.getBalance(), curr_player.getPrevious());
-			System.out.println("");
+			if(sim == 0)
+				System.out.println("");
 			return true;
 		}else {
-			this.illegalCommand('i');
+			if(sim == 0)
+				this.illegalCommand('i');
 		}
-		System.out.println("");
+		if(sim == 0)
+			System.out.println("");
 		return false;
 		
 	}
@@ -395,25 +445,29 @@ public abstract class GameActions {
 	 * @param dealer Dealer Object
 	 * @param insured insured flag
 	 */
-	public void surrender(int justdealt, Player curr_player, Dealer dealer, Boolean insured) {
+	public void surrender(int justdealt, Player curr_player, Dealer dealer, Boolean insured, int sim) {
 		if(justdealt == 1 || justdealt == 2) {
-			System.out.println("player is surrendering");
-			int dealer_score = dealer.showDealer(dealer.hand, DEAL);
+			if(sim == 0)
+				System.out.println("player is surrendering");
+			int dealer_score = dealer.showDealer(dealer.hand, DEAL, sim);
 			if(dealer_score == 21 && insured == true) { // no need to put limit on hand size, since dealer will always have 2 cards max on surrender
-				System.out.println("blackjack!!");
+				if(sim == 0)
+					System.out.println("blackjack!!");
 				curr_player.plusBalance((double)curr_player.getBalance(), (double)curr_player.getPrevious()*2.5);
 			}else {
 				curr_player.plusBalance((double)curr_player.getBalance(), (double)curr_player.getPrevious()/2);
 			}
-
-			System.out.println("player loses and his current balance is " + (double)curr_player.getBalance());
+			if(sim == 0)
+				System.out.println("player loses and his current balance is " + (double)curr_player.getBalance());
 			this.setState(INIT);
 			curr_player.clear_hand();
 			dealer.clear_hand();
 			}else {
-			this.illegalCommand('u');
+				if(sim == 0)
+					this.illegalCommand('u');
 		}
-		System.out.println("");
+		if(sim == 0)
+			System.out.println("");
 	}
 	
 	/**
@@ -422,44 +476,47 @@ public abstract class GameActions {
 	 * @param dealer Dealer Object
 	 * @return returns flag Aux for simulation
 	 */
-	public Boolean doublingdown(Player curr_player, Dealer dealer) {
+	public Boolean doublingdown(Player curr_player, Dealer dealer, int sim) {
 		//return true if doublingdown is possible, False otherwise
 		int player_score = 0;
 		int dealer_score = 0;
 		/*checks if player hand is 9 or higher*/
 		if(curr_player.handscore() >= 9 && curr_player.hand.size() == 2 && this.getState() == PLAY) {
 			curr_player.Add_cardtohand(GameDeck);
-			player_score = curr_player.showHand(curr_player.hand);
+			player_score = curr_player.showHand(curr_player.hand, sim);
 			curr_player.minusBalance(curr_player.getBalance(), curr_player.getPrevious());
 			//System.out.println("player balance is after doubling" + curr_player.getBalance());
 			curr_player.updatePrevious(curr_player.getPrevious()*2);
 			//System.out.println("Player new bet is " + curr_player.getPrevious());
 			
 			if(player_score > 21) {
-				System.out.println("player busts");
+				if(sim == 0)
+					System.out.println("player busts");
 			}
 			/*runs the same code as if stand was commanded*/
 			this.setState(DEAL);
 			if(player_score < 22) {
-				dealer_score = this.standing(dealer, curr_player, player_score);
+				dealer_score = this.standing(dealer, curr_player, player_score, sim);
 			}else {
-				dealer_score = dealer.showDealer(dealer.hand, DEAL);
+				dealer_score = dealer.showDealer(dealer.hand, DEAL, sim);
 			}
 			this.setState(SHOWDOWN);
-			this.showdown(player_score, dealer_score, curr_player, dealer, false);
+			this.showdown(player_score, dealer_score, curr_player, dealer, false, sim);
 			this.setState(INIT);
 			
 			curr_player.clear_hand();
 			dealer.clear_hand();
 
 			curr_player.updatePrevious(curr_player.getPrevious()/2);
-			System.out.println("");
+			if(sim == 0)
+				System.out.println("");
 			return true;
 			
 			
 		}
 		curr_player.updatePrevious(curr_player.getPrevious()/2);
-		System.out.println("");
+		if(sim == 0)
+			System.out.println("");
 		return false;
 		
 
@@ -476,9 +533,9 @@ public abstract class GameActions {
 
 	}
 	
-	public int adviceHL(Player curr_player, Dealer dealer, int numberOfShoesLeft) {
+	public int adviceHL(Player curr_player, Dealer dealer, int numberOfShoesLeft, int sim) {
 		// For HI-LO advice	
-		int playerScore = curr_player.showHand(curr_player.hand);
+		int playerScore = curr_player.showHand(curr_player.hand, sim);
 	
 		int runningCount = 0;
 		runningCount = runningCount + curr_player.assignValueToRank(curr_player.hand);
