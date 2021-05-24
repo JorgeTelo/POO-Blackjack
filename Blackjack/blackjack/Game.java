@@ -200,9 +200,6 @@ public class Game extends GameActions{
 			case 'q':
 				this.toquit(p1);
 				break;
-			}
-			
-			switch(cmdln) {
 			//advice
 			case "ad":
 				int nextMoveBS = this.adviceBS(p1,dealer);
@@ -224,30 +221,187 @@ public class Game extends GameActions{
 	}
 	
 	public void debug(int min_bet, int max_bet, int init_balance, String shoe_file, String cmd_file) {
-		//Deck GameDeck = new Deck(shoe);
+		//THIS IS JUST FOR NOW
+		int shoe = 4;
+		//LATER WILL NEED TO CHANGE
+		Deck GameDeck = new Deck(shoe);
 
 		Player p1 = new Player(init_balance, min_bet, GameDeck);/*starting shuffled deck*/
 		
 		Dealer dealer = new Dealer();
 		
-		Boolean insured = false;
 		
-		char[] debugMoves;
 		
-		File file = new File("C:\\Users\\pedro\\Desktop\\VASCO\\POO-Blackjack\\Blackjack\\cmd-file.txt"); 
-		  
+		File cmdFile = new File(cmd_file); 
+		File shoeFile = new File(shoe_file);
+
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(file)); 
+			BufferedReader br = new BufferedReader(new FileReader(cmdFile)); 
 			  
 			String string; 
 		 
-			while ((string = br.readLine()) != null) 
-				debugMoves[]
-				System.out.println(string); 
-		  
+			string = br.readLine();
+			
+			char[] debugMoves = new char[(string.length()/2)+1];
+
+			int j = 0;
+			for (int i=0; i < string.length(); i++) {
+				if (string.charAt(i) == ' ') {
+				}
+				else {
+					debugMoves[j] = string.charAt(i);
+					j++;
+				}
+			}
+			
+			BufferedReader brShoe = new BufferedReader(new FileReader(shoeFile)); 
+			  
+			String stringShoe; 
+		 
+			stringShoe = brShoe.readLine();
+			
+			char[] shoeArray = new char[stringShoe.length()];
+
+			int k = 0;
+			for (int i=0; i < stringShoe.length(); i++) {
+				if (stringShoe.charAt(i) == ' ') {
+				}
+				else {
+					shoeArray[k] = stringShoe.charAt(i);
+					k++;
+				}
+			}
+			System.out.println(shoeArray);
+			System.out.println(debugMoves);
+			
+			
+			int player_score = 0;
+			int dealer_score = 0;
+			Boolean insured1 = false;
+			Boolean splitable = false;
+			int justdealt = 0;
+			int amount = 0;
+
+
+			for(int i = 0; i < debugMoves.length; i++) {
+
+				System.out.println("-cmd " + debugMoves[i]);
+
+				switch(debugMoves[i]) {
+				//b
+				case 'b':
+					//check if next char after 'b' is a number
+					if (Character.isDigit(debugMoves[i+1])) {
+							//if it is, that is the amount the player wants to bet
+						if (Character.isDigit(debugMoves[i+2])) {
+							StringBuffer auxBet = new StringBuffer().append(debugMoves[i+1]).append(debugMoves[i+2]);
+							amount = Integer.parseInt(auxBet.toString());
+							i = i+2;
+						}else {		
+							amount = Character.getNumericValue(debugMoves[i+1]);
+							i++;
+						}
+							//skips the number next iteration of the for Loop
+							i++;
+							
+					}else
+						//if next char is not a number, the bet is the minimum bet
+						amount = min_bet;
+					
+					this.betting(p1, amount);
+					break;
+				//current balance
+				case '$':
+					double balance = p1.getBalance();
+					System.out.println("player current balance is " + balance);
+					break;
+				//deal
+				case 'd':
+					justdealt = 1;
+					player_score = this.dealing(dealer, p1, GameDeck);
+					//System.out.println("Dealing");
+					break;
+				//hit
+				case 'h':
+					justdealt = 0;
+					player_score = this.hitting(p1, GameDeck);
+					//if(this.getCurrent() == 0) {
+						if(player_score >= 21) {
+							this.setState(DEAL);
+							if(dealer_score < 22) {
+							dealer_score = this.standing(dealer, p1, player_score);
+							}else {
+								dealer_score = dealer.showDealer(dealer.hand, DEAL);
+							}
+							this.setState(SHOWDOWN);
+							this.showdown(player_score, dealer_score, p1, dealer, insured1);
+							this.setState(INIT);
+							p1.clear_hand();
+							dealer.clear_hand();
+						}
+		
+					break;
+				//stand
+				case 's':
+					if(this.getState() == PLAY) {
+						System.out.println("player stands");
+						this.setState(DEAL);
+						if(player_score < 22) {
+							dealer_score = this.standing(dealer, p1, player_score);
+						}else {
+							dealer_score = dealer.showDealer(dealer.hand, DEAL);
+						}
+						this.setState(SHOWDOWN);
+						this.showdown(player_score, dealer_score, p1, dealer, insured1);
+						this.setState(INIT);
+						p1.clear_hand();
+						dealer.clear_hand();
+					}
+					break;
+				case 'i':
+					insured1 = this.insurance(justdealt, p1, dealer);
+					if(insured1 == true) {
+						justdealt = 2;
+					}
+					break;
+				case 'u':
+					this.surrender(justdealt, p1, dealer, insured1);
+					break;
+				//splitting
+				case 'p':
+					splitable = p1.splitAble(p1.hand);
+					
+					if(splitable) {
+					
+					}else {
+						this.illegalCommand('p');
+					}
+					//System.out.println("player is splitting");
+					
+	
+					break;
+				//double
+				case '2':
+					//aux is useless here, only used for simulation
+					Boolean aux = this.doublingdown(p1, dealer);
+					//System.out.println("Doubling Down");
+					break;
+				//player quits
+				case 'q':
+					this.toquit(p1);
+					break;
+				}
+				
+				
+			}
+
 		} catch (IOException e) {
+			//This is when the program doesn't read correctly the files
             e.printStackTrace();
         }
+		
+		
+		
 	}
 
 
